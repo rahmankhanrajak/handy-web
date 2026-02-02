@@ -4,6 +4,7 @@ import Layout from './Layout.tsx'
 import Home from './components/pages/Home.tsx'
 import OtpLogin from './components/pages/OtpLogin.tsx'
 import Products from './components/pages/Products.tsx'
+import PrivateLayout from './PrivateLayout.tsx'
 
 function App() {
   return (
@@ -11,7 +12,9 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="login" element={<OtpLogin />} />
-        <Route path="products" element={<Products />} />
+        <Route element={<PrivateLayout />}>
+          <Route path="products" element={<Products />} />
+        </Route>
       </Route>
     </Routes>
   )
