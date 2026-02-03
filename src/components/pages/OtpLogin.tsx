@@ -22,7 +22,7 @@ const OtpLogin: React.FC = () => {
     if (enteredOtp === HARDCODED_OTP) {
       dispatch(loginSuccess());
       alert("OTP verified successfully ✅");
-      navigate("/products");
+      navigate("/SelectService");
     } else {
       alert("Invalid OTP ❌");
     }
