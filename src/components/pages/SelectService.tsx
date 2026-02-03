@@ -2,62 +2,80 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const SelectService = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
-      
-      {/* Logo */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-extrabold text-red-600">
-          BURGER <span className="text-orange-500">KING</span>
-        </h1>
-      </div>
-
-      {/* Food Illustration (placeholder image) */}
-      <div className="mb-6">
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"
-          alt="Burger Meal"
-          className="w-48 mx-auto"
-        />
-      </div>
-
-      {/* Title */}
-      <h2 className="text-gray-700 font-semibold tracking-wide mb-6">
-        SELECT SERVICE
-      </h2>
-
-      {/* Service Buttons */}
-      <div className="flex gap-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-red-50 px-4">
+      {/* Main Card */}
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 text-center">
         
-        {/* Dine In */}
-        <button onClick={()=>navigate("/products")}
-          className="w-40 h-32 border-2 border-red-500 rounded-xl
-                     flex flex-col items-center justify-center
-                     hover:bg-red-50 transition"
-        >
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png"
-            alt="Dine In"
-            className="w-12 mb-2"
-          />
-          <span className="font-semibold text-gray-700">Dine In</span>
-        </button>
+        {/* Logo */}
+        <div className="mb-6">
+          <h1 className="text-4xl font-extrabold tracking-wide">
+            <span className="text-red-600">Handy</span>{" "}
+          </h1>
+        </div>
 
-        {/* Takeaway */}
-        <button onClick={()=>navigate("/products")}
-          className="w-40 h-32 border-2 border-orange-500 rounded-xl
-                     flex flex-col items-center justify-center
-                     hover:bg-orange-50 transition"
-        >
+        {/* Illustration */}
+        <div className="mb-6">
           <img
             src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"
-            alt="Takeaway"
-            className="w-12 mb-2"
+            alt="Burger"
+            className="w-44 mx-auto drop-shadow-md"
           />
-          <span className="font-semibold text-gray-700">Takeaway</span>
-        </button>
+        </div>
 
+        {/* Title */}
+        <h2 className="text-gray-700 font-semibold tracking-widest mb-8">
+          SELECT SERVICE
+        </h2>
+
+        {/* Buttons */}
+        <div className="grid grid-cols-2 gap-5">
+          
+          {/* Dine In */}
+          <button
+            onClick={() => navigate("/products")}
+            className="group h-36 rounded-2xl border-2 border-red-500
+                       flex flex-col items-center justify-center
+                       bg-white hover:bg-red-500
+                       transition-all duration-300
+                       shadow-sm hover:shadow-lg active:scale-95"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png"
+              alt="Dine In"
+              className="w-12 mb-3 group-hover:invert transition"
+            />
+            <span className="font-semibold text-gray-700 group-hover:text-white">
+              Dine In
+            </span>
+          </button>
+
+          {/* Takeaway */}
+          <button
+            onClick={() => navigate("/products")}
+            className="group h-36 rounded-2xl border-2 border-orange-500
+                       flex flex-col items-center justify-center
+                       bg-white hover:bg-orange-500
+                       transition-all duration-300
+                       shadow-sm hover:shadow-lg active:scale-95"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"
+              alt="Takeaway"
+              className="w-12 mb-3 group-hover:invert transition"
+            />
+            <span className="font-semibold text-gray-700 group-hover:text-white">
+              Takeaway
+            </span>
+          </button>
+        </div>
+
+        {/* Footer Hint */}
+        <p className="mt-8 text-xs text-gray-400">
+          Touch a service to continue
+        </p>
       </div>
     </div>
   );

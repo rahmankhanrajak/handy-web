@@ -1,7 +1,10 @@
 import React, { useMemo, useState } from "react";
 import foodData from "../productslist.json";
 import type { CategoryItem, CartItem } from "../types"
-
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../store/index";
+import { addItem, updateQty } from "../../store/cartSlice";
+import { useNavigate } from "react-router-dom";
 interface Variant {
     id: string;
     name: string;
@@ -21,13 +24,10 @@ interface Product {
     variants?: Variant[];
 }
 
-/* ================= COMPONENT ================= */
 
 const Layout: React.FC = () => {
+    const navigate = useNavigate()
     const products: Product[] = foodData.products;
-
-    /* -------- Categories -------- */
-
     const categories: CategoryItem[] = useMemo(() => {
         const map = new Map<string, string>();
         products.forEach((p) => {
@@ -109,7 +109,6 @@ const Layout: React.FC = () => {
         });
     };
 
-    /* ================= VARIANT POPUP ================= */
 
     const [variantPopup, setVariantPopup] = useState<{
         product: Product | null;
@@ -146,143 +145,108 @@ const Layout: React.FC = () => {
         closeVariantPopup();
     };
 
-    /* ================= UI ================= */
+
+    const cartItems = Object.values(cart);
+
+    const totalQty = cartItems.reduce((sum, item) => sum + item.qty, 0);
+
+    const totalAmount = cartItems.reduce((sum, item) => {
+        const product = products.find(p => p.id === item.productId);
+        if (!product) return sum;
+
+        if (item.variantId) {
+            const variant = product.variants?.find(v => v.id === item.variantId);
+            return sum + (product.price + (variant?.price || 0)) * item.qty;
+        }
+
+        return sum + product.price * item.qty;
+    }, 0);
+
 
     return (
         <div className="h-screen flex flex-col bg-gray-100">
-            {/* ===== HEADER ===== */}
-            {/* <header className="bg-white border-b px-3 py-2">
-                <div className="flex items-center gap-3">
-                    <div className="text-lg font-bold text-orange-500">Alab</div>
-
-                    <div className="flex-1 overflow-x-auto">
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setSelectedCategory(null)}
-                                className={`min-w-[60px] p-2 rounded-lg border ${selectedCategory === null
-                                    ? "border-orange-500 bg-orange-50"
-                                    : "border-gray-200 bg-white"
-                                    }`}
-                            >
-                                All
-                            </button>
-
-                            {categories.map((cat) => (
-                                <button
-                                    key={cat.name}
-                                    onClick={() => {
-                                        setSelectedCategory(cat.name);
-                                        setSelectedSubCategory(null);
-                                    }}
-                                    className={`min-w-[88px] h-[96px] flex flex-col items-center justify-center
-    rounded-xl border-2 transition
-    ${selectedCategory === cat.name
-                                            ? "border-orange-500 bg-orange-50"
-                                            : "border-gray-200 bg-white"}
-  `}
-                                >
-                                    <img
-                                        src={cat.thumbnail}
-                                        className="h-12 w-12 rounded-lg object-cover"
-                                    />
-                                    <span className="text-sm font-semibold mt-2 text-center leading-tight">
-                                        {cat.name.replace(/-/g, " ")}
-                                    </span>
-                                </button>
-
-                            ))}
+            <div className="flex flex-1 overflow-hidden">
+                <aside className="w-24 md:w-32 bg-white border-r overflow-y-auto">
+                    <div className="sticky top-0 z-10 bg-white border-b">
+                        <div className="flex justify-center items-center h-16 font-semibold">
+                            Handy
                         </div>
                     </div>
-                </div>
-            </header> */}
 
-            {/* ===== BODY ===== */}
-            <div className="flex flex-1 overflow-hidden">
-                {/* Subcategories */}
-               <aside className="w-24 md:w-32 bg-white border-r overflow-y-auto">
-  {/* Logo */}
-  <div className="sticky top-0 z-10 bg-white border-b">
-    <div className="flex justify-center items-center h-16 font-semibold">
-      Logo
-    </div>
-  </div>
+                    <div className="py-2">
+                        {subCategories.map((sub) => {
+                            const isActive = selectedSubCategory === sub.name;
 
-  {/* Sub Categories */}
-  <div className="py-2">
-    {subCategories.map((sub) => {
-      const isActive = selectedSubCategory === sub.name;
-
-      return (
-        <button
-          key={sub.name}
-          onClick={() => setSelectedSubCategory(sub.name)}
-          className={`w-full flex flex-col items-center py-3 cursor-pointer transition-all
+                            return (
+                                <button
+                                    key={sub.name}
+                                    onClick={() => setSelectedSubCategory(sub.name)}
+                                    className={`w-full flex flex-col items-center py-3 cursor-pointer transition-all
             ${isActive ? "bg-orange-50 text-orange-600" : "hover:bg-gray-100"}
           `}
-        >
-          <img
-            src={sub.thumbnail}
-            alt={sub.name}
-            className={`h-10 w-10 rounded-md object-cover 
-              ${isActive ? "ring-2 ring-orange-500" : ""}
-            `}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/placeholder.png";
-            }}
-          />
-
-          <span className="text-xs md:text-sm mt-1 text-center capitalize leading-tight">
-            {sub.name.replace(/-/g, " ")}
-          </span>
-        </button>
-      );
-    })}
-  </div>
-</aside>
-
-
-                {/* Products */}
-                <main className="flex-1 p-3 overflow-y-auto">
-                     <div className="flex items-center gap-3">
-                    <div className="flex-1 overflow-x-auto">
-                        <div className="flex py-2 gap-2">
-                            <button
-                                onClick={() => setSelectedCategory(null)}
-                                className={`min-w-[60px] p-2 rounded-lg border ${selectedCategory === null
-                                    ? "border-orange-500 bg-orange-50"
-                                    : "border-gray-200 bg-white"
-                                    }`}
-                            >
-                                All
-                            </button>
-
-                            {categories.map((cat) => (
-                                <button
-                                    key={cat.name}
-                                    onClick={() => {
-                                        setSelectedCategory(cat.name);
-                                        setSelectedSubCategory(null);
-                                    }}
-                                    className={`min-w-[88px] h-[96px] flex flex-col items-center justify-center
-    rounded-xl border-2 transition
-    ${selectedCategory === cat.name
-                                            ? "border-orange-500 bg-orange-50"
-                                            : "border-gray-200 bg-white"}
-  `}
                                 >
                                     <img
-                                        src={cat.thumbnail}
-                                        className="h-12 w-12 rounded-lg object-cover"
+                                        src={sub.thumbnail}
+                                        alt={sub.name}
+                                        className={`h-10 w-10 rounded-md object-cover 
+              ${isActive ? "ring-2 ring-orange-500" : ""}
+            `}
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).src = "/placeholder.png";
+                                        }}
                                     />
-                                    <span className="text-sm font-semibold mt-2 text-center leading-tight">
-                                        {cat.name.replace(/-/g, " ")}
+
+                                    <span className="text-xs md:text-sm mt-1 text-center capitalize leading-tight">
+                                        {sub.name.replace(/-/g, " ")}
                                     </span>
                                 </button>
+                            );
+                        })}
+                    </div>
+                </aside>
 
-                            ))}
+
+                <main className="flex-1 p-3 overflow-y-auto">
+                    <div className="flex items-center gap-3">
+                        <div className="flex-1 overflow-x-auto">
+                            <div className="flex py-2 gap-2">
+                                <button
+                                    onClick={() => setSelectedCategory(null)}
+                                    className={`min-w-[60px] p-2 rounded-lg border ${selectedCategory === null
+                                        ? "border-orange-500 bg-orange-50"
+                                        : "border-gray-200 bg-white"
+                                        }`}
+                                >
+                                    All
+                                </button>
+
+                                {categories.map((cat) => (
+                                    <button
+                                        key={cat.name}
+                                        onClick={() => {
+                                            setSelectedCategory(cat.name);
+                                            setSelectedSubCategory(null);
+                                        }}
+                                        className={`min-w-[88px] h-[96px] flex flex-col items-center justify-center
+    rounded-xl border-2 transition
+    ${selectedCategory === cat.name
+                                                ? "border-orange-500 bg-orange-50"
+                                                : "border-gray-200 bg-white"}
+  `}
+                                    >
+                                        <img
+                                            src={cat.thumbnail}
+                                            className="h-12 w-12 rounded-lg object-cover"
+                                        />
+                                        <span className="text-sm font-semibold mt-2 text-center leading-tight">
+                                            {cat.name.replace(/-/g, " ")}
+                                        </span>
+                                    </button>
+
+                                ))}
+                            </div>
                         </div>
                     </div>
-                </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                         {filteredProducts.map((product) => {
                             const simpleKey = getSimpleKey(product.id);
@@ -343,8 +307,42 @@ const Layout: React.FC = () => {
                     </div>
                 </main>
             </div>
+            {totalQty > 0 && (
+                <div className="sticky bottom-0 bg-white border-t shadow-lg z-50">
+                    <div className="px-4 py-3 flex items-center justify-between">
+                        <button
+                            onClick={() => setCart({})}
+                            className="bg-red-500 text-white px-4 py-2 rounded text-sm font-semibold"
+                        >
+                            Cancel Order
+                        </button>
 
-            {/* ===== VARIANT POPUP ===== */}
+                        <div className="text-center">
+                            <p className="text-xs text-gray-500">
+                                Items: {totalQty}
+                            </p>
+                            <p className="text-lg font-bold">
+                                ₹{totalAmount}
+                            </p>
+                        </div>
+
+                        <button onClick={() =>
+                            navigate("/cart", {
+                                state: {
+                                    cart,
+                                    products,
+                                    totalQty,
+                                    totalAmount,
+                                },
+                            })
+                        }
+                            className="bg-green-600 text-white px-5 py-2 rounded text-sm font-semibold">
+                            Proceed
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {variantPopup.product && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                     <div className="bg-white w-80 md:w-96 rounded-lg p-4 shadow-lg">
