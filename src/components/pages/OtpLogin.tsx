@@ -1,230 +1,259 @@
-import React, { useEffect, useState } from "react";
-import type { ChangeEvent } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
+import foodData from "../productslist.json";
 
 const OTP_LENGTH = 4;
 const HARDCODED_OTP = "1290";
 
+const foodImages = [
+  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80"
+];
+
 const OtpLogin: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [step, setStep] = useState<1 | 2>(1);
-  const [mobile, setMobile] = useState<string>("");
-  const [otp, setOtp] = useState<string[]>(
-    Array(OTP_LENGTH).fill("")
-  );
-  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [mobile, setMobile] = useState("");
+  const [currentImage, setCurrentImage] = useState(0);
+
+  // Rotate background images
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % foodImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+  const [otp, setOtp] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value.replace(/\D/g, "");
+    if (v.length <= 10) setMobile(v);
+  };
+
+  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value.replace(/\D/g, "");
+    if (v.length <= OTP_LENGTH) setOtp(v);
+  };
+
+  const handleSendOtp = () => {
+    if (mobile.length !== 10) return;
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setStep(2);
+    }, 800);
+  };
+
   const verifyOtp = () => {
-    const enteredOtp = otp.join("");
+    if (otp.length !== OTP_LENGTH) return;
+    setIsLoading(true);
 
-    if (enteredOtp === HARDCODED_OTP) {
-      dispatch(loginSuccess());
-      alert("OTP verified successfully ✅");
-      navigate("/SelectService");
-    } else {
-      alert("Invalid OTP ❌");
-    }
+    setTimeout(() => {
+      if (otp === HARDCODED_OTP) {
+        dispatch(loginSuccess());
+        navigate("/SelectService");
+      } else {
+        setIsLoading(false);
+        setOtp("");
+        alert("Invalid OTP (Try 1290)");
+      }
+    }, 800);
   };
 
-  useEffect(() => {
-    if (step === 2) {
-      setShowAlert(true);
-
-      const timer = setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [step]);
-
-  const handleMobileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "");
-    if (value.length <= 10) setMobile(value);
-  };
-
-  const handleOtpChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const value = e.target.value.slice(-1).replace(/\D/g, "");
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    if (value && index < OTP_LENGTH - 1) {
-      (
-        document.getElementById(
-          `otp-${index + 1}`
-        ) as HTMLInputElement | null
-      )?.focus();
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      if (step === 1) handleSendOtp();
+      else verifyOtp();
     }
   };
 
   return (
-    <>
-      {showAlert && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
-          <div className="bg-green-600 text-white px-6 py-3 rounded-xl shadow-lg animate-slideDown">
-            OTP sent to +91 {mobile}
-          </div>
-        </div>
-      )}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-orange-50/30 to-slate-50 p-4">
+      <div className="w-full max-w-md rounded-3xl overflow-hidden bg-white/90 backdrop-blur-lg border border-gray-200/50 shadow-2xl">
 
-      <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
-        {/* LEFT PANEL – FOOD APP CONTENT */}
-        <div
-          className="hidden lg:flex flex-col justify-between p-12 text-white
-            bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700"
-        >
-          <div>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="bg-white/20 p-3 rounded-xl text-2xl">
-                🍔
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold">Handy</h1>
-                <p className="text-sm opacity-90">
-                  Food Delivery App
-                </p>
-              </div>
-            </div>
+        {/* TOP BRAND / FOOD SECTION */}
+        <div className="relative p-6 border-b border-gray-200/50 overflow-hidden min-h-[320px] flex flex-col justify-end group">
 
-            <p className="max-w-md text-lg opacity-95">
-              Order your favourite food from nearby restaurants and
-              get it delivered hot & fresh to your doorstep.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {[
-              ["🍕", "Unlimited Choices", "Explore restaurants & cuisines near you"],
-              ["⚡", "Fast Delivery", "Lightning-fast doorstep delivery"],
-              ["🚴", "Live Order Tracking", "Track your food in real-time"],
-              ["💳", "Easy Payments", "UPI, Cards & Cash on Delivery"],
-            ].map(([icon, title, desc], i) => (
+          {/* Background Slider */}
+          <div className="absolute inset-0 z-0 bg-gray-900">
+            {foodImages.map((img, index) => (
               <div
-                key={i}
-                className="flex gap-4 p-4 rounded-xl bg-white/15 backdrop-blur"
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentImage ? "opacity-100" : "opacity-0"
+                  }`}
               >
-                <div className="text-2xl">{icon}</div>
-                <div>
-                  <h4 className="font-semibold">{title}</h4>
-                  <p className="text-sm opacity-90">{desc}</p>
-                </div>
+                <div
+                  className="absolute inset-0 bg-cover bg-center transform transition-transform duration-[10000ms] scale-110"
+                  style={{ backgroundImage: `url(${img})` }}
+                ></div>
               </div>
             ))}
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30"></div>
           </div>
 
-          <p className="text-xs opacity-80">
-            © 2026 Handy Food Services Pvt Ltd
-          </p>
-        </div>
-
-        {/* RIGHT PANEL */}
-        <div className="flex items-center justify-center bg-gradient-to-br from-white to-green-50 px-4">
-          <div className="w-full max-w-md bg-white rounded-3xl p-8 shadow-2xl">
-
-            <div className="flex justify-center mb-6">
-              <div className="bg-orange-600 text-white p-3 rounded-2xl">
-                🛡️
+          <div className="relative z-10">
+            {/* BRAND */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg">
+                <span className="text-white font-black text-xl">H</span>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-widest text-white/80 font-medium">
+                  Welcome to
+                </p>
+                <p className="text-2xl font-black text-white tracking-tight">
+                  Handy
+                </p>
               </div>
             </div>
 
-            {step === 1 ? (
-              <>
-                <h2 className="text-2xl font-bold text-center mb-2">
-                  Welcome Back 👋
-                </h2>
-                <p className="text-center text-gray-500 mb-6">
-                  Login to continue your journey
-                </p>
+            {/* TAGLINE */}
+            <p className="text-white/90 text-sm mb-6 leading-relaxed max-w-xs">
+              Fresh food, multiple cuisines & quick service.
+              <span className="block text-orange-400 font-bold mt-1">Ready to serve?</span>
+            </p>
 
-                <label className="text-sm font-medium text-gray-700">
-                  Mobile Number
-                </label>
+            {/* FOOD HIGHLIGHTS (Detailed Vertical List) */}
+            <div className="space-y-3 mt-6">
+              {[
+                ["🍕", "Unlimited Choices", "Explore restaurants & cuisines near you"],
+                ["⚡", "Fast Delivery", "Lightning-fast doorstep delivery"],
+                ["🚴", "Live Order Tracking", "Track your food in real-time"],
+                ["💳", "Easy Payments", "UPI, Cards & Cash on Delivery"],
+              ].map(([icon, title, desc], i) => (
+                <div
+                  key={i}
+                  className="flex gap-4 p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/5 hover:bg-white/20 transition-colors"
+                >
+                  <div className="text-2xl">{icon}</div>
+                  <div>
+                    <h4 className="font-bold text-white text-sm">{title}</h4>
+                    <p className="text-xs text-white/70">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* LOGIN SECTION */}
+        <div className="p-6">
+          <div className="flex justify-center gap-2 mb-6">
+            <div className={`h-1 rounded-full ${step === 1 ? "w-8 bg-orange-500" : "w-2 bg-gray-200"}`} />
+            <div className={`h-1 rounded-full ${step === 2 ? "w-8 bg-orange-500" : "w-2 bg-gray-200"}`} />
+          </div>
+
+          {step === 1 ? (
+            <>
+              <h2 className="text-lg font-bold text-gray-800 text-center mb-6">
+                Enter Mobile Number
+              </h2>
+
+              <div className="flex items-center h-14 px-4 mb-6 rounded-xl bg-white border border-gray-300 focus-within:border-orange-500 transition">
+                <span className="text-gray-500 mr-2">+91</span>
                 <input
                   type="tel"
                   value={mobile}
                   onChange={handleMobileChange}
-                  placeholder="Enter mobile number"
-                  className="mt-2 w-full border rounded-xl px-4 py-3 text-lg
-                focus:outline-none focus:ring-2 focus:ring-green-500"
+                  onKeyDown={handleKeyDown}
+                  autoFocus
+                  className="flex-1 outline-none text-gray-800 tracking-widest bg-transparent"
+                  placeholder="__________"
+                  maxLength={10}
                 />
+              </div>
 
+              <button
+                onClick={handleSendOtp}
+                disabled={mobile.length !== 10 || isLoading}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold shadow-lg hover:shadow-xl disabled:opacity-50 transition"
+              >
+                {isLoading ? "PROCESSING..." : "GET OTP"}
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-3 mb-2">
                 <button
-                  onClick={() => setStep(2)}
-                  disabled={mobile.length !== 10}
-                  className="mt-6 w-full py-3 rounded-xl
-                bg-orange-600 hover:bg-orange-700 transition
-                text-white font-semibold disabled:opacity-40"
+                  onClick={() => { setStep(1); setOtp(""); }}
+                  className="p-1 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  Send OTP →
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
                 </button>
-              </>
-            ) : (
-              <>
-                <h2 className="text-2xl font-bold text-center mb-2">
-                  Verify OTP 
+                <h2 className="text-lg font-bold text-gray-800">
+                  Verification Code
                 </h2>
-                <p className="text-center text-gray-500 mb-6">
-                  Enter the code sent to +91 {mobile}
-                </p>
+              </div>
 
-                <div className="flex justify-between mb-6">
-                  {otp.map((digit, index) => (
-                    <input
-                      key={index}
-                      id={`otp-${index}`}
-                      type="text"
-                      maxLength={1}
-                      value={digit}
-                      onChange={(e) => handleOtpChange(e, index)}
-                      className="w-14 h-14 border rounded-xl text-center text-xl
-                    focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  ))}
-                </div>
-
+              <p className="text-center text-gray-500 text-sm mb-6">
+                Sent to +91 {mobile}
                 <button
-                  onClick={verifyOtp}
-                  disabled={!otp.every((d) => d !== "")}
-                  className="w-full py-3 rounded-xl
-                bg-orange-600 hover:bg-orange-700 transition
-                text-white font-semibold disabled:opacity-40 cursor-pointer"
+                  onClick={() => { setStep(1); setOtp(""); }}
+                  className="ml-2 text-orange-600 font-semibold hover:text-orange-700"
                 >
-                  Verify & Continue →
+                  Change
                 </button>
+              </p>
 
-                <button
-                  onClick={() => setStep(1)}
-                  className="mt-4 text-sm text-orange-600 w-full"
-                >
-                  Change mobile number
-                </button>
-              </>
-            )}
-          </div>
+              {/* OTP INPUT – SIMPLE & RELIABLE */}
+              <div className="mb-8">
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  value={otp}
+                  onChange={handleOtpChange}
+                  onKeyDown={handleKeyDown}
+                  autoFocus
+                  maxLength={OTP_LENGTH}
+                  placeholder="• • • •"
+                  className="
+        w-full h-14
+        text-center
+        text-2xl
+        tracking-[0.5em]
+        rounded-xl
+        border border-gray-300
+        focus:border-orange-500
+        focus:ring-2 focus:ring-orange-500/20
+        outline-none
+        text-gray-800
+        placeholder:text-gray-300
+      "
+                />
+              </div>
+
+              <button
+  onClick={verifyOtp}
+  disabled={otp.length !== OTP_LENGTH || isLoading}
+  className="
+    w-full py-3 rounded-xl
+    bg-orange-500
+    text-white font-bold
+    shadow-lg hover:shadow-xl
+    disabled:opacity-50
+    transition
+  "
+>
+  {isLoading ? "VERIFYING..." : "UNLOCK TERMINAL"}
+</button>
+
+            </>
+
+          )}
         </div>
       </div>
-
-      <style>
-        {`
-        @keyframes slideDown {
-          from { opacity: 0; transform: translate(-50%, -20px); }
-          to { opacity: 1; transform: translate(-50%, 0); }
-        }
-        .animate-slideDown {
-          animation: slideDown 0.4s ease-out;
-        }
-      `}
-      </style>
-    </>
+    </div>
   );
-
 };
 
 export default OtpLogin;
