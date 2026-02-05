@@ -57,7 +57,7 @@ const Cart = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate("/products")}
+              onClick={() => navigate("/dashboard")}
               className="w-11 h-11 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 shadow-md"
             >
               <svg className="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -269,7 +269,7 @@ const Cart = () => {
                   Clear
                 </button>
 
-                <button onClick={()=>navigate("/QrPage")} className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-red-600 text-white rounded-xl font-black shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-300 active:scale-95 flex items-center gap-2 text-sm">
+                <button onClick={()=>navigate("/qrcode")} className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-red-600 text-white rounded-xl font-black shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-300 active:scale-95 flex items-center gap-2 text-sm">
                   <span>Order</span>
                   <svg
                     className="w-5 h-5"

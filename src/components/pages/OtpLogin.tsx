@@ -57,7 +57,7 @@ const OtpLogin: React.FC = () => {
     setTimeout(() => {
       if (otp === HARDCODED_OTP) {
         dispatch(loginSuccess());
-        navigate("/SelectService");
+        navigate("/selectService");
       } else {
         setIsLoading(false);
         setOtp("");

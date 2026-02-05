@@ -20,11 +20,11 @@ function App() {
         <Route index element={<Home />} />
         <Route path="login" element={<OtpLogin />} />
         <Route element={<PrivateLayout />}>
-          <Route path="products" element={<Dashboard />} />
-          <Route path="SelectService" element={<SelectService />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="QrPage" element={<QrPage />} />
-          <Route path="transaction-success" element={<TransactionSuccess />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/selectService" element={<SelectService />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/qrcode" element={<QrPage />} />
+          <Route path="/transaction" element={<TransactionSuccess />} />
         </Route>
       </Route>
     </Routes>

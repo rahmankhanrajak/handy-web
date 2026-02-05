@@ -34,7 +34,7 @@ const SelectService = () => {
           
           {/* Dine In */}
           <button
-            onClick={() => navigate("/products")}
+            onClick={() => navigate("/dashboard")}
             className="group h-36 rounded-2xl border-2 border-red-500
                        flex flex-col items-center justify-center
                        bg-white hover:bg-red-500
@@ -53,7 +53,7 @@ const SelectService = () => {
 
           {/* Takeaway */}
           <button
-            onClick={() => navigate("/products")}
+            onClick={() => navigate("/dashboard")}
             className="group h-36 rounded-2xl border-2 border-orange-500
                        flex flex-col items-center justify-center
                        bg-white hover:bg-orange-500
