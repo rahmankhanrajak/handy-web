@@ -10,7 +10,7 @@ import ProductCard from "../ProductCard";
 import Pagination from "../Pagination";
 import "../../index.css"
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 12;
 
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch();
@@ -167,39 +167,6 @@ const Dashboard: React.FC = () => {
         <div className="flex-1 w-full px-1 sm:px-2 space-y-2 sm:space-y-4 overflow-y-auto scrollbar-hide">
           {selectedCategory ? (
             <>
-              <button
-                onClick={() => setSelectedSubCategory(null)}
-                className="w-full flex flex-col items-center gap-1 group transition-all duration-300 animate-fade-in"
-              >
-                <div
-                  className={`w-10 h-10 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-105 ${selectedSubCategory === null
-                    ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white ring-4 ring-orange-200 scale-105 shadow-lg shadow-orange-500/30"
-                    : "bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-600"
-                    }`}
-                >
-                  <svg
-                    className="w-5 h-5 sm:w-7 sm:h-7"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
-                </div>
-                <span
-                  className={`text-[8px] sm:text-[10px] font-bold transition-colors ${selectedSubCategory === null
-                    ? "text-orange-600"
-                    : "text-gray-500"
-                    }`}
-                >
-                  View All
-                </span>
-              </button>
               {subCategories.map((subCat, index) => {
                 const isActive = selectedSubCategory === subCat.name;
                 return (
@@ -234,32 +201,7 @@ const Dashboard: React.FC = () => {
             </>
           ) : (
             <div className="flex items-start justify-center h-full">
-              <button
-                onClick={() => {
-                  setSelectedCategory(null);
-                  setSelectedSubCategory(null);
-                }}
-                className="flex-shrink-0 flex flex-col items-center gap-2 group transition-all duration-300 animate-fade-in"
-              >
-                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-orange-500 to-orange-600 text-white ">
-                  <svg
-                    className="w-5 h-5 sm:w-7 sm:h-7"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
-                </div>
-                <span className="text-[10px] sm:text-xs font-bold">
-                  All Items
-                </span>
-              </button>
+              
             </div>
           )}
         </div>
@@ -345,41 +287,48 @@ const Dashboard: React.FC = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-2 sm:p-6 scrollbar-modern">
-          <div className="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-4">
-            {paginatedProducts.map((product, index) => {
-              const simpleKey = getSimpleKey(product.id);
-              const simpleItem = cart[simpleKey];
-              const added = isProductAdded(product.id);
+        <div className="flex-1 flex flex-col overflow-hidden">
 
-              return (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  added={added}
-                  simpleItem={simpleItem}
-                  hasVariants={hasVariants}
-                  openVariantPopup={openVariantPopup}
-                  updateSimpleQty={updateSimpleQty}
-                  addSimpleProduct={addSimpleProduct}
-                  index={index}
-                />
-              );
-            })}
+          {/* Products Scroll Area */}
+          <div className="flex-1 overflow-y-auto p-2 sm:p-6 scrollbar-modern">
+            <div className="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-4">
+              {paginatedProducts.map((product, index) => {
+                const simpleKey = getSimpleKey(product.id);
+                const simpleItem = cart[simpleKey];
+                const added = isProductAdded(product.id);
 
+                return (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    added={added}
+                    simpleItem={simpleItem}
+                    hasVariants={hasVariants}
+                    openVariantPopup={openVariantPopup}
+                    updateSimpleQty={updateSimpleQty}
+                    addSimpleProduct={addSimpleProduct}
+                    index={index}
+                  />
+                );
+              })}
+            </div>
           </div>
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            pageNumbers={pageNumbers}
-            startIndex={startIndex}
-            endIndex={endIndex}
-            totalItems={filteredProducts.length}
-            setPage={setPage}
-          />
+
+          <div className="fixed bottom-1 left-1/2 -translate-x-1/2 z-40 bg-transparent">
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              pageNumbers={pageNumbers}
+              startIndex={startIndex}
+              endIndex={endIndex}
+              totalItems={filteredProducts.length}
+              setPage={setPage}
+            />
+          </div>
         </div>
+
       </div>
-      <div className="fixed bottom-4 sm:bottom-8 right-4 sm:right-8 z-50">
+      <div className="fixed bottom-4 sm:bottom-8 left-4 sm:right-8 z-50">
         <button
           onClick={() => navigate("/cart")}
           className={`flex items-center gap-3 sm:gap-4 pl-4 sm:pl-6 pr-5 sm:pr-8 py-3 sm:py-4 rounded-full shadow-2xl transition-all duration-500 transform hover:scale-105 active:scale-95 ${totalQty > 0
@@ -388,12 +337,7 @@ const Dashboard: React.FC = () => {
             }`}
         >
           <div className="relative">
-            <span
-              className={`text-xl sm:text-2xl ${totalQty > 0 ? "animate-bounce-soft" : ""
-                }`}
-            >
-              🛍️
-            </span>
+           
             {totalQty > 0 && (
               <span className="absolute -top-2 -right-2 bg-gradient-to-br from-red-500 to-pink-600 text-white text-[9px] sm:text-[10px] font-bold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full border-2 border-white shadow-lg animate-scale-pop">
                 {totalQty}
@@ -410,9 +354,7 @@ const Dashboard: React.FC = () => {
                 ? `${totalQty} Item${totalQty > 1 ? "s" : ""}`
                 : "Cart Empty"}
             </p>
-            <p className="text-base sm:text-xl font-black">
-              ₹{totalAmount.toFixed(2)}
-            </p>
+          
           </div>
         </button>
       </div>
@@ -454,7 +396,7 @@ const Dashboard: React.FC = () => {
             </div>
 
             <div className="p-6">
-              <div className="space-y-3 max-h-60 overflow-y-auto scrollbar-modern">
+              <div className="flex-1 overflow-y-auto p-2 sm:p-6 pb-24 scrollbar-modern">
                 {variantPopup.product.variants?.map((v, index) => {
                   const isSelected = variantPopup.variant?.id === v.id;
                   return (
@@ -497,7 +439,7 @@ const Dashboard: React.FC = () => {
                 })}
               </div>
 
-              <div className="mt-8 flex items-center gap-4">
+              <div className=" flex items-center gap-4">
                 <div className="flex items-center gap-4 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl px-4 py-3 shadow-inner">
                   <button
                     onClick={() =>
