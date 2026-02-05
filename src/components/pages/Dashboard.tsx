@@ -6,13 +6,13 @@ import type { RootState } from "../../store";
 import { addItem, updateQty } from "../../store/cartSlice";
 import { useNavigate } from "react-router-dom";
 import type { Product, Variant } from "../types";
-import ProductCard from "../../components/ProductCard";
-import Pagination from "../../components/Pagination";
+import ProductCard from "../ProductCard";
+import Pagination from "../Pagination";
 import "../../index.css"
 
 const ITEMS_PER_PAGE = 9;
 
-const Products: React.FC = () => {
+const Dashboard: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const products: Product[] = productslist;
@@ -143,13 +143,10 @@ const Products: React.FC = () => {
   };
 
   const cartItems = Object.values(cart);
-
   const totalQty = cartItems.reduce((s, i) => s + i.qty, 0);
-
   const totalAmount = cartItems.reduce((sum, item) => {
     const product = products.find((p) => p.id === item.productId);
     if (!product) return sum;
-
     if (item.variantId) {
       const variant = product.variants?.find((v) => v.id === item.variantId);
       return sum + (product.price + (variant?.price || 0)) * item.qty;
@@ -546,4 +543,4 @@ const Products: React.FC = () => {
   );
 };
 
-export default Products;
+export default Dashboard;
