@@ -144,17 +144,6 @@ const Dashboard: React.FC = () => {
 
   const cartItems = Object.values(cart);
   const totalQty = cartItems.reduce((s, i) => s + i.qty, 0);
-  const totalAmount = cartItems.reduce((sum, item) => {
-    const product = products.find((p) => p.id === item.productId);
-    if (!product) return sum;
-    if (item.variantId) {
-      const variant = product.variants?.find((v) => v.id === item.variantId);
-      return sum + (product.price + (variant?.price || 0)) * item.qty;
-    }
-
-    return sum + product.price * item.qty;
-  }, 0);
-
   const startIndex = (page - 1) * ITEMS_PER_PAGE + 1;
   const endIndex = Math.min(page * ITEMS_PER_PAGE, filteredProducts.length);
 
