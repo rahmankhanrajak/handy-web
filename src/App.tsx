@@ -7,6 +7,8 @@ import Products from './components/pages/Products.tsx'
 import PrivateLayout from './PrivateLayout.tsx'
 import SelectService from './components/pages/SelectService.tsx'
 import Cart from './components/pages/Cart.tsx'
+import QrPage from './components/pages/QrPage.tsx'
+import TransactionSuccess from './components/pages/TransactionSuccess.tsx'
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="products" element={<Products />} />
           <Route path="SelectService" element={<SelectService />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="QrPage" element={<QrPage />} />
+          <Route path="transaction-success" element={<TransactionSuccess />} />
         </Route>
       </Route>
     </Routes>

@@ -1,40 +1,22 @@
-import React, { useMemo, useState } from "react";
-import foodData from "../productslist.json";
+import React, { useMemo, useState, useEffect } from "react";
+import productslist from "../../data/productsList";
 import type { CategoryItem } from "../types";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { addItem, updateQty } from "../../store/cartSlice";
 import { useNavigate } from "react-router-dom";
+import type { Product, Variant } from "../types";
+import ProductCard from "../../components/ProductCard";
+import Pagination from "../../components/Pagination";
+import "../../index.css"
 
-interface Variant {
-  id: string;
-  name: string;
-  price: number;
-}
+const ITEMS_PER_PAGE = 9;
 
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  subCategory: string;
-  price: number;
-  rating: number;
-  stock: number;
-  thumbnail: string;
-  variants?: Variant[];
-}
-
-const Layout: React.FC = () => {
+const Products: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const products: Product[] = foodData.products;
-
-  /* ================= REDUX CART ================= */
+  const products: Product[] = productslist;
   const cart = useSelector((state: RootState) => state.cart.items);
-
-  /* ================= CATEGORY ================= */
   const categories: CategoryItem[] = useMemo(() => {
     const map = new Map<string, string>();
     products.forEach((p) => {
@@ -76,7 +58,36 @@ const Layout: React.FC = () => {
     );
   }, [products, selectedCategory, selectedSubCategory]);
 
-  /* ================= HELPERS ================= */
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCategory, selectedSubCategory]);
+
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    return filteredProducts.slice(start, end);
+  }, [filteredProducts, page]);
+
+  const pageNumbers = useMemo(() => {
+    const pages: number[] = [];
+    const maxButtons = 5;
+
+    let start = Math.max(1, page - 2);
+    let end = Math.min(totalPages, start + maxButtons - 1);
+
+    if (end - start < maxButtons - 1) {
+      start = Math.max(1, end - maxButtons + 1);
+    }
+
+    for (let i = start; i <= end; i++) pages.push(i);
+
+    return pages;
+  }, [page, totalPages]);
+
   const hasVariants = (product: Product) =>
     Array.isArray(product.variants) && product.variants.length > 0;
 
@@ -87,7 +98,6 @@ const Layout: React.FC = () => {
     return !!cart[key];
   };
 
-  /* ================= SIMPLE ITEM ================= */
   const addSimpleProduct = (product: Product) => {
     dispatch(addItem({ productId: product.id, qty: 1 }));
   };
@@ -96,7 +106,6 @@ const Layout: React.FC = () => {
     dispatch(updateQty({ productId, delta }));
   };
 
-  /* ================= VARIANT POPUP ================= */
   const [variantPopup, setVariantPopup] = useState<{
     product: Product | null;
     variant: Variant | null;
@@ -133,7 +142,6 @@ const Layout: React.FC = () => {
     closeVariantPopup();
   };
 
-  /* ================= TOTALS ================= */
   const cartItems = Object.values(cart);
 
   const totalQty = cartItems.reduce((s, i) => s + i.qty, 0);
@@ -150,47 +158,51 @@ const Layout: React.FC = () => {
     return sum + product.price * item.qty;
   }, 0);
 
-  /* ================= UI ================= */
+  const startIndex = (page - 1) * ITEMS_PER_PAGE + 1;
+  const endIndex = Math.min(page * ITEMS_PER_PAGE, filteredProducts.length);
+
   return (
     <div className="h-screen flex bg-gradient-to-br from-slate-50 via-orange-50/20 to-slate-50 relative overflow-hidden font-sans">
-      {/* SIDEBAR - SUBCATEGORIES */}
-      <aside className="w-28 bg-white/90 backdrop-blur-xl border-r border-gray-200/50 flex flex-col items-center py-6 shadow-xl shadow-black/5 z-30 animate-slide-in-left">
-        {/* Brand */}
-        <div className="w-12 h-12 bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/40 mb-8 animate-pulse-subtle">
-          <span className="text-white font-black text-xl">H</span>
+      <aside className="w-16 sm:w-28 bg-white/90 backdrop-blur-xl border-r border-gray-200/50 flex flex-col items-center py-3 sm:py-6 shadow-xl shadow-black/5 z-30 animate-slide-in-left">
+        <div className="w-9 h-9 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/40 mb-4 sm:mb-8 animate-pulse-subtle">
+          <span className="text-white font-black text-base sm:text-xl">H</span>
         </div>
-
-        {/* SubCategories List */}
-        <div className="flex-1 w-full px-2 space-y-4 overflow-y-auto scrollbar-hide">
+        <div className="flex-1 w-full px-1 sm:px-2 space-y-2 sm:space-y-4 overflow-y-auto scrollbar-hide">
           {selectedCategory ? (
             <>
-              {/* ALL Subcategories Button */}
               <button
                 onClick={() => setSelectedSubCategory(null)}
                 className="w-full flex flex-col items-center gap-1 group transition-all duration-300 animate-fade-in"
               >
                 <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-105 ${
-                    selectedSubCategory === null
-                      ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white ring-4 ring-orange-200 scale-105 shadow-lg shadow-orange-500/30"
-                      : "bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-600"
-                  }`}
+                  className={`w-10 h-10 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-105 ${selectedSubCategory === null
+                    ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white ring-4 ring-orange-200 scale-105 shadow-lg shadow-orange-500/30"
+                    : "bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-600"
+                    }`}
                 >
-                  <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                  <svg
+                    className="w-5 h-5 sm:w-7 sm:h-7"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
                   </svg>
                 </div>
                 <span
-                  className={`text-[10px] font-bold transition-colors ${
-                    selectedSubCategory === null
-                      ? "text-orange-600"
-                      : "text-gray-500"
-                  }`}
+                  className={`text-[8px] sm:text-[10px] font-bold transition-colors ${selectedSubCategory === null
+                    ? "text-orange-600"
+                    : "text-gray-500"
+                    }`}
                 >
                   View All
                 </span>
               </button>
-
               {subCategories.map((subCat, index) => {
                 const isActive = selectedSubCategory === subCat.name;
                 return (
@@ -201,11 +213,10 @@ const Layout: React.FC = () => {
                     className="w-full flex flex-col items-center gap-1 group transition-all duration-300 animate-fade-in-up"
                   >
                     <div
-                      className={`w-14 h-14 rounded-2xl overflow-hidden shadow-sm transition-all duration-300 hover:scale-105 ${
-                        isActive
-                          ? "ring-4 ring-orange-200 scale-105 shadow-lg shadow-orange-500/20"
-                          : "ring-1 ring-gray-100 hover:ring-gray-200"
-                      }`}
+                      className={`w-10 h-10 sm:w-14 sm:h-14 rounded-2xl overflow-hidden shadow-sm transition-all duration-300 hover:scale-105 ${isActive
+                        ? "ring-4 ring-orange-200 scale-105 shadow-lg shadow-orange-500/20"
+                        : "ring-1 ring-gray-100 hover:ring-gray-200"
+                        }`}
                     >
                       <img
                         src={subCat.thumbnail}
@@ -215,9 +226,8 @@ const Layout: React.FC = () => {
                     </div>
 
                     <span
-                      className={`text-[10px] font-bold text-center capitalize max-w-full truncate transition-colors ${
-                        isActive ? "text-orange-600" : "text-gray-500"
-                      }`}
+                      className={`text-[8px] sm:text-[10px] font-bold text-center capitalize max-w-full truncate transition-colors ${isActive ? "text-orange-600" : "text-gray-500"
+                        }`}
                     >
                       {subCat.name.replace(/-/g, " ")}
                     </span>
@@ -234,55 +244,66 @@ const Layout: React.FC = () => {
                 }}
                 className="flex-shrink-0 flex flex-col items-center gap-2 group transition-all duration-300 animate-fade-in"
               >
-               <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-105 ${
-                    selectedSubCategory === null
-                      ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white ring-4 ring-orange-200 scale-105 shadow-lg shadow-orange-500/30"
-                      : "bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-600"
-                  }`}
-                >
-                  <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-orange-500 to-orange-600 text-white ">
+                  <svg
+                    className="w-5 h-5 sm:w-7 sm:h-7"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
                   </svg>
                 </div>
-                <span className="text-xs font-bold ">All Items</span>
+                <span className="text-[10px] sm:text-xs font-bold">
+                  All Items
+                </span>
               </button>
             </div>
           )}
         </div>
       </aside>
 
-      {/* MAIN CONTENT AREA */}
       <div className="flex-1 flex flex-col bg-transparent relative">
-        {/* Header Bar - Categories */}
         <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-lg shadow-black/5 animate-slide-down">
-          <div className="px-6 py-4">
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
-              {/* ALL Button */}
+          <div className="px-2 sm:px-6 py-2 sm:py-4">
+            <div className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-2">
               <button
                 onClick={() => {
                   setSelectedCategory(null);
                   setSelectedSubCategory(null);
                 }}
-                className="flex-shrink-0 flex flex-col items-center gap-2 group transition-all duration-300 animate-fade-in"
+                className="flex-shrink-0 flex flex-col items-center gap-1 sm:gap-2 group transition-all duration-300 animate-fade-in"
               >
                 <div
-                  className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-105 ${
-                    selectedCategory === null
-                      ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white ring-4 ring-orange-200 scale-105 shadow-lg shadow-orange-500/40"
-                      : "bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-600"
-                  }`}
+                  className={`w-10 h-10 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-105 ${selectedCategory === null
+                    ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white ring-4 ring-orange-200 scale-105 "
+                    : "bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-600"
+                    }`}
                 >
-                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  <svg
+                    className="w-5 h-5 sm:w-8 sm:h-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                    />
                   </svg>
                 </div>
                 <span
-                  className={`text-xs font-bold transition-colors ${
-                    selectedCategory === null
-                      ? "text-orange-600"
-                      : "text-gray-500"
-                  }`}
+                  className={`text-[10px] sm:text-xs font-bold transition-colors ${selectedCategory === null
+                    ? "text-orange-600"
+                    : "text-gray-500"
+                    }`}
                 >
                   All Items
                 </span>
@@ -299,29 +320,24 @@ const Layout: React.FC = () => {
                       setSelectedSubCategory(null);
                     }}
                     style={{ animationDelay: `${index * 50}ms` }}
-                    className="flex-shrink-0 flex flex-col items-center gap-2 transition-all duration-300 animate-fade-in-up"
+                    className="flex-shrink-0 flex flex-col items-center gap-1 sm:gap-2 transition-all duration-300 animate-fade-in-up"
                   >
-                    {/* Image Tile */}
-                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden shadow-sm bg-gray-100 group">
+                    <div className="relative w-10 h-10 sm:w-16 sm:h-16 rounded-2xl overflow-hidden shadow-sm bg-gray-100 group">
                       <img
                         src={cat.thumbnail}
                         alt={cat.name}
-                        className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
-                          isActive ? "brightness-110" : "brightness-95"
-                        }`}
+                        className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${isActive ? "brightness-110" : "brightness-95"
+                          }`}
                       />
 
-                      {/* Highlight Border */}
                       {isActive && (
                         <div className="absolute inset-0 rounded-2xl ring-4 ring-orange-400 ring-offset-2 ring-offset-white animate-scale-in"></div>
                       )}
                     </div>
 
-                    {/* Name */}
                     <span
-                      className={`text-xs font-bold text-center capitalize max-w-[80px] truncate transition-colors ${
-                        isActive ? "text-orange-600" : "text-gray-500"
-                      }`}
+                      className={`text-[10px] sm:text-xs font-bold text-center capitalize max-w-[55px] sm:max-w-[80px] truncate transition-colors ${isActive ? "text-orange-600" : "text-gray-500"
+                        }`}
                     >
                       {cat.name.replace(/-/g, " ")}
                     </span>
@@ -332,157 +348,81 @@ const Layout: React.FC = () => {
           </div>
         </header>
 
-        {/* Product Grid */}
-        <div className="flex-1 overflow-y-auto p-6 scrollbar-modern">
-          <div className="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-            {filteredProducts.map((product, index) => {
+        <div className="flex-1 overflow-y-auto p-2 sm:p-6 scrollbar-modern">
+          <div className="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-4">
+            {paginatedProducts.map((product, index) => {
               const simpleKey = getSimpleKey(product.id);
               const simpleItem = cart[simpleKey];
               const added = isProductAdded(product.id);
 
               return (
-                <div
+                <ProductCard
                   key={product.id}
-                  style={{ animationDelay: `${index * 30}ms` }}
-                  className={`rounded-3xl p-3 transition-all duration-500 group flex flex-col border relative backdrop-blur-sm animate-fade-in-up hover:scale-[1.02] active:scale-[0.98] ${
-                    added
-                      ? "bg-gradient-to-br from-orange-50 to-orange-100/50 border-orange-300 shadow-xl shadow-orange-200/50 ring-2 ring-orange-400/30"
-                      : "bg-white/90 border-gray-100 shadow-sm hover:shadow-xl hover:shadow-orange-100/50"
-                  }`}
-                >
-                  {/* Added Badge */}
-                  {added && (
-                    <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[9px] font-black px-2.5 py-1 rounded-full shadow-lg animate-scale-pop z-10">
-                      ✓ ADDED
-                    </div>
-                  )}
-
-                  {/* Image */}
-                  <div className="relative aspect-square rounded-2xl overflow-hidden mb-3 bg-gradient-to-br from-gray-100 to-gray-200">
-                    <img
-                      src={product.thumbnail}
-                      alt={product.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                    {/* Rating Badge */}
-                    <div className="absolute top-2 right-2 bg-white/95 backdrop-blur text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm text-gray-700 transition-transform duration-300 group-hover:scale-110">
-                      ★ {product.rating}
-                    </div>
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1 flex flex-col">
-                    <h3 className="font-bold text-gray-800 text-sm leading-tight mb-1 line-clamp-2 transition-colors duration-300 group-hover:text-orange-600">
-                      {product.title}
-                    </h3>
-                    <p className="text-xs text-gray-400 mb-3 line-clamp-1">
-                      {product.description}
-                    </p>
-
-                    <div className="mt-auto flex items-center justify-between">
-                      <span className="text-lg font-black text-gray-800">
-                        ₹{product.price}
-                      </span>
-
-                      {/* Action Button */}
-                      {hasVariants(product) ? (
-                        <button
-                          onClick={() => openVariantPopup(product)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border-2 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-lg ${
-                            added
-                              ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white border-orange-400 shadow-orange-500/40"
-                              : "bg-orange-50 text-orange-600 border-orange-100 hover:bg-orange-100 shadow-orange-200/50"
-                          }`}
-                        >
-                          +
-                        </button>
-                      ) : simpleItem ? (
-                        <div className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 py-1 rounded-xl font-black text-sm shadow-lg shadow-orange-500/40 animate-scale-in">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              updateSimpleQty(product.id, -1);
-                            }}
-                            className="w-6 h-6 rounded-lg bg-white/20 hover:bg-white/30 transition-all duration-200 active:scale-90"
-                          >
-                            −
-                          </button>
-                          <span className="animate-number-change">{simpleItem.qty}</span>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              updateSimpleQty(product.id, 1);
-                            }}
-                            className="w-6 h-6 rounded-lg bg-white/20 hover:bg-white/30 transition-all duration-200 active:scale-90"
-                          >
-                            +
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => addSimpleProduct(product)}
-                          className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/40 hover:shadow-xl hover:shadow-orange-500/50 hover:scale-110 transition-all duration-300 transform active:scale-95 group/btn"
-                        >
-                          <svg
-                            className="w-4 h-4 transition-transform duration-300 group-hover/btn:rotate-90"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={3}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M12 4v16m8-8H4"
-                            />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                  product={product}
+                  added={added}
+                  simpleItem={simpleItem}
+                  hasVariants={hasVariants}
+                  openVariantPopup={openVariantPopup}
+                  updateSimpleQty={updateSimpleQty}
+                  addSimpleProduct={addSimpleProduct}
+                  index={index}
+                />
               );
             })}
+
           </div>
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            pageNumbers={pageNumbers}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            totalItems={filteredProducts.length}
+            setPage={setPage}
+          />
         </div>
       </div>
-
-      {/* Floating Cart Button - Always Visible & Enhanced */}
-      <div className="fixed bottom-8 right-8 z-50">
+      <div className="fixed bottom-4 sm:bottom-8 right-4 sm:right-8 z-50">
         <button
           onClick={() => navigate("/cart")}
-          className={`flex items-center gap-4 pl-6 pr-8 py-4 rounded-full shadow-2xl transition-all duration-500 transform hover:scale-105 active:scale-95 ${
-            totalQty > 0
-              ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-orange-500/50 animate-cart-pulse"
-              : "bg-gray-800 text-white shadow-gray-900/50"
-          }`}
+          className={`flex items-center gap-3 sm:gap-4 pl-4 sm:pl-6 pr-5 sm:pr-8 py-3 sm:py-4 rounded-full shadow-2xl transition-all duration-500 transform hover:scale-105 active:scale-95 ${totalQty > 0
+            ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-orange-500/50 animate-cart-pulse"
+            : "bg-gray-800 text-white shadow-gray-900/50"
+            }`}
         >
           <div className="relative">
-            <span className={`text-2xl ${totalQty > 0 ? 'animate-bounce-soft' : ''}`}>🛍️</span>
+            <span
+              className={`text-xl sm:text-2xl ${totalQty > 0 ? "animate-bounce-soft" : ""
+                }`}
+            >
+              🛍️
+            </span>
             {totalQty > 0 && (
-              <span className="absolute -top-2 -right-2 bg-gradient-to-br from-red-500 to-pink-600 text-white text-[10px] font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-white shadow-lg animate-scale-pop">
+              <span className="absolute -top-2 -right-2 bg-gradient-to-br from-red-500 to-pink-600 text-white text-[9px] sm:text-[10px] font-bold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full border-2 border-white shadow-lg animate-scale-pop">
                 {totalQty}
               </span>
             )}
           </div>
+
           <div className="text-left">
-            <p className={`text-xs font-bold uppercase tracking-wider ${totalQty > 0 ? 'text-orange-100' : 'text-gray-400'}`}>
-              {totalQty > 0 ? `${totalQty} Item${totalQty > 1 ? 's' : ''}` : 'Cart Empty'}
+            <p
+              className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider ${totalQty > 0 ? "text-orange-100" : "text-gray-400"
+                }`}
+            >
+              {totalQty > 0
+                ? `${totalQty} Item${totalQty > 1 ? "s" : ""}`
+                : "Cart Empty"}
             </p>
-            <p className="text-xl font-black">₹{totalAmount.toFixed(2)}</p>
+            <p className="text-base sm:text-xl font-black">
+              ₹{totalAmount.toFixed(2)}
+            </p>
           </div>
         </button>
       </div>
 
-      {/* Variant Modal */}
       {variantPopup.product && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-scale-bounce">
-            {/* Header */}
             <div className="relative h-40 bg-gradient-to-br from-orange-400 to-red-500 overflow-hidden">
               <img
                 src={variantPopup.product.thumbnail}
@@ -492,7 +432,9 @@ const Layout: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
               <div className="absolute inset-0 flex items-end p-6">
                 <div>
-                  <div className="text-orange-200 text-[10px] font-bold uppercase tracking-wider mb-1">Select Your Variant</div>
+                  <div className="text-orange-200 text-[10px] font-bold uppercase tracking-wider mb-1">
+                    Select Your Variant
+                  </div>
                   <h2 className="text-2xl font-black text-white drop-shadow-lg">
                     {variantPopup.product.title}
                   </h2>
@@ -514,7 +456,6 @@ const Layout: React.FC = () => {
               </button>
             </div>
 
-            {/* Content */}
             <div className="p-6">
               <div className="space-y-3 max-h-60 overflow-y-auto scrollbar-modern">
                 {variantPopup.product.variants?.map((v, index) => {
@@ -522,19 +463,30 @@ const Layout: React.FC = () => {
                   return (
                     <button
                       key={v.id}
-                      onClick={() => setVariantPopup((p) => ({ ...p, variant: v }))}
+                      onClick={() =>
+                        setVariantPopup((p) => ({ ...p, variant: v }))
+                      }
                       style={{ animationDelay: `${index * 50}ms` }}
-                      className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-[1.02] active:scale-95 animate-fade-in-up ${
-                        isSelected
-                          ? "border-orange-500 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 shadow-lg shadow-orange-200/50 scale-[1.02]"
-                          : "border-gray-100 hover:border-gray-200 text-gray-600"
-                      }`}
+                      className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-[1.02] active:scale-95 animate-fade-in-up ${isSelected
+                        ? "border-orange-500 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 shadow-lg shadow-orange-200/50 scale-[1.02]"
+                        : "border-gray-100 hover:border-gray-200 text-gray-600"
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         {isSelected && (
                           <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center animate-scale-pop">
-                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            <svg
+                              className="w-4 h-4 text-white"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={3}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
                             </svg>
                           </div>
                         )}
@@ -548,7 +500,6 @@ const Layout: React.FC = () => {
                 })}
               </div>
 
-              {/* Footer */}
               <div className="mt-8 flex items-center gap-4">
                 <div className="flex items-center gap-4 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl px-4 py-3 shadow-inner">
                   <button
@@ -562,7 +513,7 @@ const Layout: React.FC = () => {
                   >
                     −
                   </button>
-                  <span className="font-black text-lg w-6 text-center animate-number-change">
+                  <span className="font-black text-lg w-6 text-center">
                     {variantPopup.qty}
                   </span>
                   <button
@@ -591,91 +542,8 @@ const Layout: React.FC = () => {
           </div>
         </div>
       )}
-
-      <style>{`
-        /* Scrollbar Styles */
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-modern::-webkit-scrollbar { width: 6px; }
-        .scrollbar-modern::-webkit-scrollbar-track { background: transparent; }
-        .scrollbar-modern::-webkit-scrollbar-thumb { 
-          background: linear-gradient(to bottom, #fb923c, #f97316);
-          border-radius: 10px; 
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes slideInLeft {
-          from { transform: translateX(-100%); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes slideDown {
-          from { transform: translateY(-100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes fadeInUp {
-          from { transform: translateY(20px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes scaleIn {
-          from { transform: scale(0.9); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes scaleBounce {
-          0% { transform: scale(0.8); opacity: 0; }
-          50% { transform: scale(1.05); }
-          100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes scalePop {
-          0% { transform: scale(0); }
-          50% { transform: scale(1.2); }
-          100% { transform: scale(1); }
-        }
-
-        @keyframes pulseSoft {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-        }
-
-        @keyframes bounceSoft {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-4px); }
-        }
-
-        @keyframes cartPulse {
-          0%, 100% { box-shadow: 0 20px 35px -5px rgba(251, 146, 60, 0.5); }
-          50% { box-shadow: 0 25px 45px -5px rgba(251, 146, 60, 0.7); }
-        }
-
-        @keyframes numberChange {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.2); }
-          100% { transform: scale(1); }
-        }
-
-        /* Apply Animations */
-        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
-        .animate-slide-in-left { animation: slideInLeft 0.5s ease-out; }
-        .animate-slide-down { animation: slideDown 0.4s ease-out; }
-        .animate-fade-in-up { animation: fadeInUp 0.5s ease-out backwards; }
-        .animate-scale-in { animation: scaleIn 0.3s ease-out; }
-        .animate-scale-bounce { animation: scaleBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .animate-scale-pop { animation: scalePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .animate-pulse-subtle { animation: pulseSoft 3s ease-in-out infinite; }
-        .animate-bounce-soft { animation: bounceSoft 2s ease-in-out infinite; }
-        .animate-cart-pulse { animation: cartPulse 2s ease-in-out infinite; }
-        .animate-number-change { animation: numberChange 0.3s ease-out; }
-      `}</style>
     </div>
   );
 };
 
-export default Layout;
+export default Products;

@@ -2,13 +2,15 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { updateQty, clearCart } from "../../store/cartSlice";
-import foodData from "../productslist.json";
+import productslist from "../../data/productsList";
+import type { Product } from "../types";
 
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const products = foodData.products;
+  // const products = productslist;
+  const products: Product[] = productslist;
 
   /** 🔴 REDUX CART */
   const cart = useSelector((state: RootState) => state.cart.items);
@@ -62,19 +64,19 @@ const Cart = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            
+
             <div>
               <h1 className="text-2xl font-black text-gray-900">Shopping Cart</h1>
               <p className="text-xs text-gray-500 font-medium">Review your order</p>
             </div>
           </div>
 
-          {totalQty > 0 && (
+          {/* {totalQty > 0 && (
             <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-2xl shadow-lg shadow-orange-500/30 animate-scale-in">
               <p className="text-xs font-bold opacity-90">Total Items</p>
               <p className="text-2xl font-black">{totalQty}</p>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -106,8 +108,8 @@ const Cart = () => {
 
               const variant = item.variantId
                 ? product.variants?.find(
-                    v => v.id === item.variantId
-                  )
+                  v => v.id === item.variantId
+                )
                 : null;
 
               const itemPrice =
@@ -221,12 +223,12 @@ const Cart = () => {
                 <p className="text-xs font-bold text-blue-600 uppercase tracking-wide">Items</p>
                 <p className="text-2xl font-black text-blue-700">{totalQty}</p>
               </div>
-              
+
               <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-3 border border-purple-200">
-                <p className="text-xs font-bold text-purple-600 uppercase tracking-wide">Tax (5%)</p>
+                <p className="text-xs font-bold text-purple-600 uppercase tracking-wide">Tax</p>
                 <p className="text-2xl font-black text-purple-700">₹{(totalAmount * 0.05).toFixed(2)}</p>
               </div>
-              
+
               <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-3 border border-orange-200">
                 <p className="text-xs font-bold text-orange-600 uppercase tracking-wide">Subtotal</p>
                 <p className="text-2xl font-black text-orange-700">₹{totalAmount.toFixed(2)}</p>
@@ -234,33 +236,58 @@ const Cart = () => {
             </div>
 
             {/* Total & Actions */}
-            <div className="flex items-center justify-between gap-4">
+            {/* Total & Actions */}
+            <div className="flex items-center justify-between gap-3">
               <div className="flex-1">
-                <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Grand Total</p>
-                <p className="text-4xl font-black bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">
+                  Grand Total
+                </p>
+
+                <p className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent leading-none">
                   ₹{(totalAmount * 1.05).toFixed(2)}
                 </p>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 <button
                   onClick={() => dispatch(clearCart())}
-                  className="px-6 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-2xl font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center gap-2"
+                  className="px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-bold shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/30 transition-all duration-300 active:scale-95 flex items-center gap-1.5 text-sm"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
                   </svg>
-                  Clear Cart
+                  Clear
                 </button>
 
-                <button className="px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-red-600 text-white rounded-2xl font-black text-lg shadow-xl shadow-orange-500/40 hover:shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center gap-3">
-                  <span>Place Order</span>
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <button onClick={()=>navigate("/QrPage")} className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-red-600 text-white rounded-xl font-black shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-300 active:scale-95 flex items-center gap-2 text-sm">
+                  <span>Order</span>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
                   </svg>
                 </button>
               </div>
             </div>
+
           </div>
         </div>
       )}

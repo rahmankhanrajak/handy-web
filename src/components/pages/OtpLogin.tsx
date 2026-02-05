@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
-import foodData from "../productslist.json";
 
 const OTP_LENGTH = 4;
 const HARDCODED_OTP = "1290";
@@ -233,9 +232,9 @@ const OtpLogin: React.FC = () => {
               </div>
 
               <button
-  onClick={verifyOtp}
-  disabled={otp.length !== OTP_LENGTH || isLoading}
-  className="
+                onClick={verifyOtp}
+                disabled={otp.length !== OTP_LENGTH || isLoading}
+                className="
     w-full py-3 rounded-xl
     bg-orange-500
     text-white font-bold
@@ -243,9 +242,9 @@ const OtpLogin: React.FC = () => {
     disabled:opacity-50
     transition
   "
->
-  {isLoading ? "VERIFYING..." : "UNLOCK TERMINAL"}
-</button>
+              >
+                {isLoading ? "VERIFYING..." : "UNLOCK TERMINAL"}
+              </button>
 
             </>
 

@@ -8,3 +8,22 @@ export  interface CartItem {
     variantId?: string;
     qty: number;
 }
+
+export interface Variant {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export interface Product {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  subCategory: string;
+  price: number;
+  rating: number;
+  stock: number;
+  thumbnail: string;
+  variants?: Variant[];
+}
