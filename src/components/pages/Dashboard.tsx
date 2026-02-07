@@ -150,7 +150,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="h-screen flex bg-gradient-to-br from-slate-50 via-orange-50/20 to-slate-50 relative overflow-hidden font-sans">
       <aside className="w-16 sm:w-28 bg-white/90 backdrop-blur-xl border-r border-gray-200/50 flex flex-col items-center py-3 sm:py-6 shadow-xl shadow-black/5 z-30 animate-slide-in-left">
-        <div className="w-9 h-9 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/40 mb-4 sm:mb-8 animate-pulse-subtle">
+        <div className="w-9 h-9 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 rounded-xl flex items-center justify-center  mb-4 sm:mb-8 animate-pulse-subtle">
           <span className="text-white font-black text-base sm:text-xl">H</span>
         </div>
         <div className="flex-1 w-full px-1 sm:px-2 space-y-2 sm:space-y-4 overflow-y-auto scrollbar-hide">
@@ -167,7 +167,7 @@ const Dashboard: React.FC = () => {
                   >
                     <div
                       className={`w-10 h-10 sm:w-14 sm:h-14 rounded-2xl overflow-hidden shadow-sm transition-all duration-300 hover:scale-105 ${isActive
-                        ? "ring-4 ring-orange-200 scale-105 shadow-lg shadow-orange-500/20"
+                        ? " scale-105 shadow-lg shadow-orange-500/20"
                         : "ring-1 ring-gray-100 hover:ring-gray-200"
                         }`}
                     >
@@ -197,86 +197,101 @@ const Dashboard: React.FC = () => {
       </aside>
 
       <div className="flex-1 flex flex-col bg-transparent relative">
-        <header className="animate-slide-down">
-          <div className="px-2 sm:px-6 py-2 sm:py-4">
-            <div className="overflow-x-auto scrollbar-hide">
-              <div className="inline-flex gap-2 sm:gap-3 pb-2 ">
-                <button
-                  onClick={() => {
-                    setSelectedCategory(null);
-                    setSelectedSubCategory(null);
-                  }}
-                  className="flex-shrink-0 flex flex-col items-center gap-1 sm:gap-2 group transition-all duration-300 animate-fade-in"
-                >
-                  <div
-                    className={`w-10 h-10 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-105 ${selectedCategory === null
-                      ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white ring-4 ring-orange-200 scale-105 "
-                      : "bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-600"
-                      }`}
-                  >
-                    <svg
-                      className="w-5 h-5 sm:w-8 sm:h-8"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                      />
-                    </svg>
-                  </div>
-                  <span
-                    className={`text-[10px] sm:text-xs font-bold transition-colors ${selectedCategory === null
+        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-200/60">
+  <div className="px-3 sm:px-6 py-2 sm:py-4">
+    <div className="overflow-x-auto scrollbar-hide scroll-smooth">
+      <div className="flex w-max gap-3 sm:gap-5 pb-2">
+
+        {/* ALL ITEMS */}
+        <button
+          onClick={() => {
+            setSelectedCategory(null);
+            setSelectedSubCategory(null);
+          }}
+          className="flex-shrink-0 flex flex-col items-center gap-1 sm:gap-2"
+        >
+          <div
+            className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-md transition-all duration-300
+              ${
+                selectedCategory === null
+                  ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white "
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+          >
+            <svg
+              className="w-6 h-6 sm:w-8 sm:h-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              />
+            </svg>
+          </div>
+
+          <span
+            className={`text-[10px] sm:text-xs font-bold text-center max-w-[70px] truncate
+              ${
+                selectedCategory === null
+                  ? "text-orange-600"
+                  : "text-gray-500"
+              }`}
+          >
+            All Items
+          </span>
+        </button>
+
+        {/* CATEGORY LIST */}
+        {categories.map((cat) => {
+          const isActive = selectedCategory === cat.name;
+
+          return (
+            <button
+              key={cat.name}
+              onClick={() => {
+                setSelectedCategory(cat.name);
+                setSelectedSubCategory(null);
+              }}
+              className="flex-shrink-0 flex flex-col items-center gap-1 sm:gap-2 group"
+            >
+              <div
+                className={`relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden shadow-md transition-all duration-300
+                  ${
+                    isActive
+                      ? " scale-105 shadow-lg shadow-orange-300/40"
+                      : "ring-1 ring-gray-200 hover:scale-105"
+                  }`}
+              >
+                <img
+                  src={cat.thumbnail}
+                  alt={cat.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+
+              <span
+                className={`text-[10px] sm:text-xs font-bold text-center capitalize max-w-[70px] truncate transition-colors
+                  ${
+                    isActive
                       ? "text-orange-600"
                       : "text-gray-500"
-                      }`}
-                  >
-                    All Items
-                  </span>
-                </button>
+                  }`}
+              >
+                {cat.name.replace(/-/g, " ")}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</header>
 
-                {categories.map((cat, index) => {
-                  const isActive = selectedCategory === cat.name;
 
-                  return (
-                    <button
-                      key={cat.name}
-                      onClick={() => {
-                        setSelectedCategory(cat.name);
-                        setSelectedSubCategory(null);
-                      }}
-                      style={{ animationDelay: `${index * 50}ms` }}
-                      className="flex-shrink-0 flex flex-col items-center gap-1 sm:gap-2 transition-all duration-300 animate-fade-in-up"
-                    >
-                      <div className="relative w-10 h-10 sm:w-16 sm:h-16 rounded-2xl overflow-hidden shadow-sm bg-gray-100 group">
-                        <img
-                          src={cat.thumbnail}
-                          alt={cat.name}
-                          className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${isActive ? "brightness-110" : "brightness-95"
-                            }`}
-                        />
-
-                        {isActive && (
-                          <div className="absolute inset-0 rounded-2xl ring-4 ring-orange-400 ring-offset-2 ring-offset-white animate-scale-in"></div>
-                        )}
-                      </div>
-
-                      <span
-                        className={`text-[10px] sm:text-xs font-bold text-center capitalize max-w-[55px] sm:max-w-[80px] truncate transition-colors ${isActive ? "text-orange-600" : "text-gray-500"
-                          }`}
-                      >
-                        {cat.name.replace(/-/g, " ")}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </header>
 
         <div className="flex-1 flex flex-col overflow-hidden">
 
