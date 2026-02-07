@@ -44,12 +44,12 @@ export default function Home() {
 
         {/* Brand Identity */}
         <div className="mb-12 relative">
-          <h1 className="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 tracking-tighter animate-fade-in-up">
+          <h1 className="text-7xl md:text-9xl font-black text-transparent bg-clip-text  bg-orange-500 tracking-tighter animate-fade-in-up">
             HANDY
           </h1>
           <div className="absolute -inset-4 blur-3xl bg-orange-500/20 rounded-full opacity-50 animate-pulse-slow -z-10"></div>
-          <p className="text-sm md:text-base font-medium tracking-[0.5em] text-orange-500 uppercase mt-4 animate-fade-in-up delay-100">
-            Smart Restaurant POS
+          <p className="text-lg md:text-lg font-bold tracking-[0.5em] text-orange-500 uppercase mt-4 animate-fade-in-up delay-100">
+            Smart Restaurant 
           </p>
         </div>
 
@@ -61,10 +61,10 @@ export default function Home() {
         {/* Premium CTA Button */}
         <button
           onClick={() => navigate("/login")}
-          className="group relative px-12 py-5 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full overflow-hidden transition-all duration-300 hover:bg-white/20 hover:scale-105 active:scale-95 animate-fade-in-up delay-300 ring-1 ring-white/20 shadow-2xl hover:shadow-orange-500/20"
+          className="group relative px-12 py-5 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full overflow-hidden transition-all duration-300 hover:hover:bg-orange-500  hover:scale-105 active:scale-95 animate-fade-in-up delay-300 ring-1 ring-white/20 shadow-2xl hover:shadow-orange-500/20"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
-          <span className="relative flex items-center justify-center gap-3 text-white font-bold tracking-wide text-lg">
+          <span className="relative cursor-pointer  flex items-center justify-center gap-3 text-white font-bold tracking-wide text-lg">
             Touch to Order
             <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

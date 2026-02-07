@@ -11,7 +11,7 @@ const SelectService = () => {
         {/* Logo */}
         <div className="mb-6">
           <h1 className="text-4xl font-extrabold tracking-wide">
-            <span className="text-red-600">Handy</span>{" "}
+            <span className="text-orange-500">Handy</span>{" "}
           </h1>
         </div>
 
@@ -35,9 +35,9 @@ const SelectService = () => {
           {/* Dine In */}
           <button
             onClick={() => navigate("/dashboard")}
-            className="group h-36 rounded-2xl border-2 border-red-500
+            className="group h-36 cursor-pointer rounded-2xl border-2 border-orange-500
                        flex flex-col items-center justify-center
-                       bg-white hover:bg-red-500
+                       bg-white hover:bg-orange-500
                        transition-all duration-300
                        shadow-sm hover:shadow-lg active:scale-95"
           >
@@ -54,7 +54,7 @@ const SelectService = () => {
           {/* Takeaway */}
           <button
             onClick={() => navigate("/dashboard")}
-            className="group h-36 rounded-2xl border-2 border-orange-500
+            className="group h-36 cursor-pointer rounded-2xl border-2 border-orange-500
                        flex flex-col items-center justify-center
                        bg-white hover:bg-orange-500
                        transition-all duration-300

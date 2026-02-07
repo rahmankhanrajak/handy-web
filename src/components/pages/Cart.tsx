@@ -97,7 +97,7 @@ const Cart = () => {
           {totalQty > 0 && (
             <button
               onClick={() => setShowBill(true)}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black shadow-md shadow-orange-500/30 active:scale-95 text-sm"
+              className="px-4 py-2 cursor-pointer rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black shadow-md shadow-orange-500/30 active:scale-95 text-sm"
             >
               View Bill
             </button>
@@ -142,17 +142,17 @@ const Cart = () => {
               <div
                 key={item.key}
                 style={{ animationDelay: `${index * 50}ms` }}
-                className="relative  bg-white/90 backdrop-blur-sm rounded-3xl p-3 shadow-lg border border-gray-200/50 transition-all duration-500 animate-fade-in-up"
+                className="relative   bg-white/90 backdrop-blur-sm rounded-3xl p-3 shadow-lg border border-gray-200/50 transition-all duration-500 animate-fade-in-up"
               >{/* Delete Button (Top Right) */}
                 <button
                   onClick={() =>
                     dispatch(removeItem({ productId: item.productId, variantId: item.variantId }))
                   }
-                  className="absolute top-3 right-3 w-8 h-8 rounded-xl bg-red-100 hover:bg-red-200 flex items-center justify-center active:scale-95 transition shadow-sm"
+                  className="absolute cursor-pointer top-3 right-3 w-8 h-8 rounded-xl bg-red-100 hover:bg-red-200 flex items-center justify-center active:scale-95 transition shadow-sm"
                   title="Remove Item"
                 >
                   <svg
-                    className="w-4 h-4 text-red-600"
+                    className="w-4 h-4  text-red-600"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -202,12 +202,12 @@ const Cart = () => {
 
                     <div className="flex items-center justify-between mt-2">
                       {/* Qty */}
-                      <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+                      <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 ">
                         <button
                           onClick={() =>
                             decreaseQty(item.productId, item.variantId)
                           }
-                          className="w-7 h-7 rounded-lg bg-white flex items-center justify-center text-gray-700 font-bold shadow-sm active:scale-95"
+                          className="w-7 h-7 cursor-pointer rounded-lg bg-white flex items-center justify-center text-gray-700 font-bold shadow-sm active:scale-95"
                         >
                           <svg
                             className="w-4 h-4"
@@ -232,7 +232,7 @@ const Cart = () => {
                           onClick={() =>
                             increaseQty(item.productId, item.variantId)
                           }
-                          className="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center text-white font-bold shadow-md active:scale-95"
+                          className="w-7 h-7 cursor-pointer rounded-lg bg-orange-500 flex items-center justify-center text-white font-bold shadow-md active:scale-95"
                         >
                           <svg
                             className="w-4 h-4"
@@ -284,7 +284,7 @@ const Cart = () => {
             <div className="flex gap-2">
               <button
                 onClick={() => dispatch(clearCart())}
-                className="px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-bold shadow-sm active:scale-95 flex items-center gap-1 text-xs"
+                className="px-3 py-2  cursor-pointer bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-bold shadow-sm active:scale-95 flex items-center gap-1 text-xs"
               >
                 <svg
                   className="w-4 h-4"
@@ -304,7 +304,7 @@ const Cart = () => {
 
               <button
                 onClick={() => setShowBill(true)}
-                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-black shadow-md active:scale-95 flex items-center gap-1 text-xs"
+                className="px-4 py-2 cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-black shadow-md active:scale-95 flex items-center gap-1 text-xs"
               >
                 Bill
                 <svg
@@ -336,7 +336,7 @@ const Cart = () => {
 
               <button
                 onClick={() => setShowBill(false)}
-                className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center active:scale-95"
+                className="w-9 h-9 cursor-pointer rounded-full bg-gray-100 flex items-center justify-center active:scale-95"
               >
                 ✕
               </button>
@@ -394,7 +394,7 @@ const Cart = () => {
             <div className="p-4 border-t flex gap-2">
               <button
                 onClick={() => setShowBill(false)}
-                className="flex-1 py-2.5 rounded-xl bg-gray-200 font-bold text-gray-800 active:scale-95"
+                className="flex-1 cursor-pointer py-2.5 rounded-xl bg-gray-200 font-bold text-gray-800 active:scale-95"
               >
                 Close
               </button>
@@ -404,7 +404,7 @@ const Cart = () => {
                   setShowBill(false);
                   navigate("/qrcode");
                 }}
-                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black shadow-md active:scale-95"
+                className="flex-1 py-2.5 cursor-pointer rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black shadow-md active:scale-95"
               >
                 Proceed
               </button>

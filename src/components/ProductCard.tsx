@@ -54,7 +54,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {hasVariants(product) ? (
             <button
               onClick={() => openVariantPopup(product)}
-              className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/40 hover:shadow-xl hover:shadow-orange-500/50 hover:scale-110 transition-all duration-300 transform active:scale-95 group/btn"
+              className="w-7 h-7 cursor-pointer sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/40 hover:shadow-xl hover:shadow-orange-500/50 hover:scale-110 transition-all duration-300 transform active:scale-95 group/btn"
             >
               <svg
                 className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300 group-hover/btn:rotate-90"
@@ -100,7 +100,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             ) : (
               <button
                 onClick={() => addSimpleProduct(product)}
-                className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/40 hover:shadow-xl hover:shadow-orange-500/50 hover:scale-110 transition-all duration-300 transform active:scale-95 group/btn"
+                className="w-7 h-7 cursor-pointer sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/40 hover:shadow-xl hover:shadow-orange-500/50 hover:scale-110 transition-all duration-300 transform active:scale-95 group/btn"
               >
                 <svg
                   className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300 group-hover/btn:rotate-90"

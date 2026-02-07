@@ -41,13 +41,13 @@ const cartSlice = createSlice({
             item.qty += action.payload.delta;
             if (item.qty <= 0) delete state.items[key];
         },
-      removeItem: (state, action: PayloadAction<{ productId: number; variantId?: string }>) => {
-  const { productId, variantId } = action.payload;
+        removeItem: (state, action: PayloadAction<{ productId: number; variantId?: string }>) => {
+            const { productId, variantId } = action.payload;
 
-  const key = `${productId}_${variantId || "base"}`;
+            const key = `${productId}_${variantId || "base"}`;
 
-  delete state.items[key];
-},
+            delete state.items[key];
+        },
 
         clearCart: (state) => {
             state.items = {};

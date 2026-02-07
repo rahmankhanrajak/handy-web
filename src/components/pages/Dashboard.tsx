@@ -93,11 +93,6 @@ const Dashboard: React.FC = () => {
 
   const getSimpleKey = (productId: number) => `${productId}_base`;
 
-  const isProductAdded = (productId: number) => {
-    const key = getSimpleKey(productId);
-    return !!cart[key];
-  };
-
   const addSimpleProduct = (product: Product) => {
     dispatch(addItem({ productId: product.id, qty: 1 }));
   };
@@ -150,10 +145,10 @@ const Dashboard: React.FC = () => {
   return (
     <div className="h-screen flex bg-gradient-to-br from-slate-50 via-orange-50/20 to-slate-50 relative overflow-hidden font-sans">
       <aside className="w-16 sm:w-28 bg-white/90 backdrop-blur-xl border-r border-gray-200/50 flex flex-col items-center py-3 sm:py-6 shadow-xl shadow-black/5 z-30 animate-slide-in-left">
-        <div className="w-9 h-9 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 rounded-xl flex items-center justify-center  mb-4 sm:mb-8 animate-pulse-subtle">
+        <div className="w-9 h-9 sm:w-12 sm:h-12 bg-orange-600  rounded-xl flex items-center justify-center  mb-4 sm:mb-8 animate-pulse-subtle">
           <span className="text-white font-black text-base sm:text-xl">H</span>
         </div>
-        <div className="flex-1 w-full px-1 sm:px-2 space-y-2 sm:space-y-4 overflow-y-auto scrollbar-hide">
+        <div className="flex-1 w-full  px-1 sm:px-2 space-y-2 sm:space-y-4 overflow-y-auto scrollbar-hide">
           {selectedCategory ? (
             <>
               {subCategories.map((subCat, index) => {
@@ -163,7 +158,7 @@ const Dashboard: React.FC = () => {
                     key={subCat.name}
                     onClick={() => setSelectedSubCategory(subCat.name)}
                     style={{ animationDelay: `${index * 50}ms` }}
-                    className="w-full flex flex-col items-center gap-1 group transition-all duration-300 animate-fade-in-up"
+                    className="w-full cursor-pointer flex  flex-col items-center gap-1 group transition-all duration-300 animate-fade-in-up"
                   >
                     <div
                       className={`w-10 h-10 sm:w-14 sm:h-14 rounded-2xl overflow-hidden shadow-sm transition-all duration-300 hover:scale-105 ${isActive
@@ -198,98 +193,94 @@ const Dashboard: React.FC = () => {
 
       <div className="flex-1 flex flex-col bg-transparent relative">
         <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-200/60">
-  <div className="px-3 sm:px-6 py-2 sm:py-4">
-    <div className="overflow-x-auto scrollbar-hide scroll-smooth">
-      <div className="flex w-max gap-3 sm:gap-5 pb-2">
+          <div className="px-3 sm:px-6 py-2 sm:py-4">
+            <div className="overflow-x-auto scrollbar-hide scroll-smooth">
+              <div className="flex w-max gap-3 sm:gap-5 pb-2">
 
-        {/* ALL ITEMS */}
-        <button
-          onClick={() => {
-            setSelectedCategory(null);
-            setSelectedSubCategory(null);
-          }}
-          className="flex-shrink-0 flex flex-col items-center gap-1 sm:gap-2"
-        >
-          <div
-            className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-md transition-all duration-300
-              ${
-                selectedCategory === null
-                  ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white "
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
-          >
-            <svg
-              className="w-6 h-6 sm:w-8 sm:h-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-              />
-            </svg>
-          </div>
+                {/* ALL ITEMS */}
+                <button
+                  onClick={() => {
+                    setSelectedCategory(null);
+                    setSelectedSubCategory(null);
+                  }}
+                  className="flex-shrink-0 flex flex-col items-center gap-1 sm:gap-2"
+                >
+                  <div
+                    className={`w-12 h-12 cursor-pointer sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-md transition-all duration-300
+              ${selectedCategory === null
+                        ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white "
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
+                  >
+                    <svg
+                      className="w-6 h-6 sm:w-8 sm:h-8"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                      />
+                    </svg>
+                  </div>
 
-          <span
-            className={`text-[10px] sm:text-xs font-bold text-center max-w-[70px] truncate
-              ${
-                selectedCategory === null
-                  ? "text-orange-600"
-                  : "text-gray-500"
-              }`}
-          >
-            All Items
-          </span>
-        </button>
+                  <span
+                    className={`text-[10px]  sm:text-xs font-bold text-center max-w-[70px] truncate 
+              ${selectedCategory === null
+                        ? "text-orange-500"
+                        : "text-gray-500"
+                      }`}
+                  >
+                    All Items
+                  </span>
+                </button>
 
-        {/* CATEGORY LIST */}
-        {categories.map((cat) => {
-          const isActive = selectedCategory === cat.name;
+                {/* CATEGORY LIST */}
+                {categories.map((cat) => {
+                  const isActive = selectedCategory === cat.name;
 
-          return (
-            <button
-              key={cat.name}
-              onClick={() => {
-                setSelectedCategory(cat.name);
-                setSelectedSubCategory(null);
-              }}
-              className="flex-shrink-0 flex flex-col items-center gap-1 sm:gap-2 group"
-            >
-              <div
-                className={`relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden shadow-md transition-all duration-300
-                  ${
-                    isActive
-                      ? " scale-105 shadow-lg shadow-orange-300/40"
-                      : "ring-1 ring-gray-200 hover:scale-105"
-                  }`}
-              >
-                <img
-                  src={cat.thumbnail}
-                  alt={cat.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
+                  return (
+                    <button
+                      key={cat.name}
+                      onClick={() => {
+                        setSelectedCategory(cat.name);
+                        setSelectedSubCategory(null);
+                      }}
+                      className="flex-shrink-0 cursor-pointer flex flex-col items-center gap-1 sm:gap-2 group"
+                    >
+                      <div
+                        className={`relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden shadow-md transition-all duration-300
+                  ${isActive
+                            ? " scale-105 shadow-lg shadow-orange-300/40"
+                            : "ring-1 ring-gray-200 hover:scale-105"
+                          }`}
+                      >
+                        <img
+                          src={cat.thumbnail}
+                          alt={cat.name}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </div>
+
+                      <span
+                        className={`text-[10px] sm:text-xs font-bold text-center capitalize max-w-[70px] truncate transition-colors
+                  ${isActive
+                            ? "text-orange-600"
+                            : "text-gray-500"
+                          }`}
+                      >
+                        {cat.name.replace(/-/g, " ")}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
-
-              <span
-                className={`text-[10px] sm:text-xs font-bold text-center capitalize max-w-[70px] truncate transition-colors
-                  ${
-                    isActive
-                      ? "text-orange-600"
-                      : "text-gray-500"
-                  }`}
-              >
-                {cat.name.replace(/-/g, " ")}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  </div>
-</header>
+            </div>
+          </div>
+        </header>
 
 
 
@@ -301,7 +292,10 @@ const Dashboard: React.FC = () => {
               {paginatedProducts.map((product, index) => {
                 const simpleKey = getSimpleKey(product.id);
                 const simpleItem = cart[simpleKey];
-                const added = isProductAdded(product.id);
+                const added =
+                  !!simpleItem ||
+                  Object.values(cart).some((item: any) => item.productId === product.id);
+                // const added = isProductAdded(product.id);
 
                 return (
                   <ProductCard
@@ -351,7 +345,7 @@ const Dashboard: React.FC = () => {
             )}
           </div>
 
-          <div className="text-left">
+          <div className="text-left cursor-pointer">
             <p
               className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider ${totalQty > 0 ? "text-orange-100" : "text-gray-400"
                 }`}
@@ -387,7 +381,7 @@ const Dashboard: React.FC = () => {
               </div>
               <button
                 onClick={closeVariantPopup}
-                className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white rounded-full p-2 backdrop-blur transition-all duration-300 hover:rotate-90 active:scale-90 shadow-lg"
+                className="absolute cursor-pointer top-4 right-4 bg-white/20 hover:bg-white/30 text-white rounded-full p-2 backdrop-blur transition-all duration-300 hover:rotate-90 active:scale-90 shadow-lg"
               >
                 <svg
                   className="w-5 h-5"
@@ -412,14 +406,14 @@ const Dashboard: React.FC = () => {
                         setVariantPopup((p) => ({ ...p, variant: v }))
                       }
                       style={{ animationDelay: `${index * 50}ms` }}
-                      className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-[1.02] active:scale-95 animate-fade-in-up ${isSelected
+                      className={`w-full cursor-pointer flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-[1.02] active:scale-95 animate-fade-in-up ${isSelected
                         ? "border-orange-500 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 shadow-lg shadow-orange-200/50 scale-[1.02]"
                         : "border-gray-100 hover:border-gray-200 text-gray-600"
                         }`}
                     >
                       <div className="flex items-center gap-3">
                         {isSelected && (
-                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center animate-scale-pop">
+                          <div className="w-6 h-6  rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center animate-scale-pop">
                             <svg
                               className="w-4 h-4 text-white"
                               fill="none"
@@ -454,7 +448,7 @@ const Dashboard: React.FC = () => {
                         qty: Math.max(1, p.qty - 1),
                       }))
                     }
-                    className="text-xl font-bold text-gray-600 hover:text-gray-900 transition-all duration-200 active:scale-90"
+                    className="text-xl cursor-pointer font-bold text-gray-600 hover:text-gray-900 transition-all duration-200 active:scale-90"
                   >
                     −
                   </button>
@@ -465,7 +459,7 @@ const Dashboard: React.FC = () => {
                     onClick={() =>
                       setVariantPopup((p) => ({ ...p, qty: p.qty + 1 }))
                     }
-                    className="text-xl font-bold text-gray-600 hover:text-gray-900 transition-all duration-200 active:scale-90"
+                    className="text-xl cursor-pointer font-bold text-gray-600 hover:text-gray-900 transition-all duration-200 active:scale-90"
                   >
                     +
                   </button>
@@ -473,7 +467,7 @@ const Dashboard: React.FC = () => {
 
                 <button
                   onClick={confirmAddVariant}
-                  className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-xl shadow-xl shadow-orange-500/40 hover:shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 transform hover:scale-105 active:scale-95"
+                  className="flex-1  cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-xl shadow-xl shadow-orange-500/40 hover:shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 transform hover:scale-105 active:scale-95"
                 >
                   Add to Cart • ₹
                   {(

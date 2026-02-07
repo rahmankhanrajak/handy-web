@@ -56,7 +56,7 @@ const TransactionSuccess = () => {
         <div className="mt-6 flex gap-3">
           <button
             onClick={() => navigate("/")}
-            className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition"
+            className="flex-1 cursor-pointer py-3 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition"
           >
             Back to Home
           </button>

@@ -175,7 +175,7 @@ const OtpLogin: React.FC = () => {
                 disabled={mobile.length !== 10 || isLoading}
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold shadow-lg hover:shadow-xl disabled:opacity-50 transition"
               >
-                {isLoading ? "PROCESSING..." : "GET OTP"}
+                {isLoading ? "PROCESSING..." : "SEND OTP"}
               </button>
             </>
           ) : (
@@ -243,7 +243,7 @@ const OtpLogin: React.FC = () => {
     transition
   "
               >
-                {isLoading ? "VERIFYING..." : "UNLOCK TERMINAL"}
+                {isLoading ? "VERIFYING..." : "VERIFY"}
               </button>
 
             </>
