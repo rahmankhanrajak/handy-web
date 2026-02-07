@@ -145,7 +145,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="h-screen flex bg-gradient-to-br from-slate-50 via-orange-50/20 to-slate-50 relative overflow-hidden font-sans">
       <aside className="w-16 sm:w-28 bg-white/90 backdrop-blur-xl border-r border-gray-200/50 flex flex-col items-center py-3 sm:py-6 shadow-xl shadow-black/5 z-30 animate-slide-in-left">
-        <div className="w-9 h-9 sm:w-12 sm:h-12 bg-orange-600  rounded-xl flex items-center justify-center  mb-4 sm:mb-8 animate-pulse-subtle">
+        <div className="w-9 h-9 sm:w-12 sm:h-12 bg-orange-500  rounded-xl flex items-center justify-center  mb-4 sm:mb-8 animate-pulse-subtle">
           <span className="text-white font-black text-base sm:text-xl">H</span>
         </div>
         <div className="flex-1 w-full  px-1 sm:px-2 space-y-2 sm:space-y-4 overflow-y-auto scrollbar-hide">
@@ -192,8 +192,8 @@ const Dashboard: React.FC = () => {
       </aside>
 
       <div className="flex-1 flex flex-col bg-transparent relative">
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-200/60">
-          <div className="px-3 sm:px-6 py-2 sm:py-4">
+        <header className="sticky top-0 z-40  backdrop-blur-xl ">
+          <div className="px-3 sm:px-6 py-1 sm:py-4">
             <div className="overflow-x-auto scrollbar-hide scroll-smooth">
               <div className="flex w-max gap-3 sm:gap-5 pb-2">
 
@@ -208,7 +208,7 @@ const Dashboard: React.FC = () => {
                   <div
                     className={`w-12 h-12 cursor-pointer sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-md transition-all duration-300
               ${selectedCategory === null
-                        ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white "
+                        ? "bg-orange-500  text-white "
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                   >
@@ -226,7 +226,6 @@ const Dashboard: React.FC = () => {
                       />
                     </svg>
                   </div>
-
                   <span
                     className={`text-[10px]  sm:text-xs font-bold text-center max-w-[70px] truncate 
               ${selectedCategory === null
@@ -268,7 +267,7 @@ const Dashboard: React.FC = () => {
                       <span
                         className={`text-[10px] sm:text-xs font-bold text-center capitalize max-w-[70px] truncate transition-colors
                   ${isActive
-                            ? "text-orange-600"
+                            ? "text-orange-500"
                             : "text-gray-500"
                           }`}
                       >
@@ -328,36 +327,35 @@ const Dashboard: React.FC = () => {
         </div>
 
       </div>
-      <div className="fixed bottom-4 sm:bottom-8 left-4 sm:right-8 z-50">
-        <button
-          onClick={() => navigate("/cart")}
-          className={`flex items-center gap-3 sm:gap-4 pl-4 sm:pl-6 pr-5 sm:pr-8 py-3 sm:py-4 rounded-full shadow-2xl transition-all duration-500 transform hover:scale-105 active:scale-95 ${totalQty > 0
-            ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-orange-500/50 animate-cart-pulse"
-            : "bg-gray-800 text-white shadow-gray-900/50"
-            }`}
-        >
-          <div className="relative">
+    <div className="fixed bottom-4 sm:bottom-8 left-4 sm:right-8 z-50">
+  <button
+    onClick={() => navigate("/cart")}
+    className={`flex items-center gap-3 sm:gap-4 pl-4 sm:pl-6 pr-5 sm:pr-8 py-3 sm:py-4 rounded-full shadow-2xl transition-all duration-500 transform hover:scale-105 active:scale-95 ${
+      totalQty > 0
+        ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-orange-500/50 animate-cart-pulse"
+        : "bg-gray-800 text-white shadow-gray-900/50"
+    }`}
+  >
+    <div className="relative">
+      {totalQty > 0 && (
+        <span className="absolute -top-2 -right-2 bg-green-600 text-white text-[9px] sm:text-[10px] font-bold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full border-2 border-white shadow-lg animate-scale-pop">
+          {totalQty}
+        </span>
+      )}
+    </div>
 
-            {totalQty > 0 && (
-              <span className="absolute -top-2 -right-2 bg-gradient-to-br from-red-500 to-pink-600 text-white text-[9px] sm:text-[10px] font-bold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full border-2 border-white shadow-lg animate-scale-pop">
-                {totalQty}
-              </span>
-            )}
-          </div>
+    <div className="text-left cursor-pointer">
+      <p
+        className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider ${
+          totalQty > 0 ? "text-orange-100" : "text-gray-400"
+        }`}
+      >
+        {totalQty > 0 ? "View Cart" : "Cart Empty"}
+      </p>
+    </div>
+  </button>
+</div>
 
-          <div className="text-left cursor-pointer">
-            <p
-              className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider ${totalQty > 0 ? "text-orange-100" : "text-gray-400"
-                }`}
-            >
-              {totalQty > 0
-                ? `${totalQty} Item${totalQty > 1 ? "s" : ""}`
-                : "Cart Empty"}
-            </p>
-
-          </div>
-        </button>
-      </div>
 
       {variantPopup.product && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in">
