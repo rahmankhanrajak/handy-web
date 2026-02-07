@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type {  PayloadAction } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface CartItem {
     productId: number;
@@ -26,7 +26,6 @@ const cartSlice = createSlice({
                 qty: (state.items[key]?.qty || 0) + action.payload.qty,
             };
         },
-
         updateQty: (
             state,
             action: PayloadAction<{
@@ -42,6 +41,13 @@ const cartSlice = createSlice({
             item.qty += action.payload.delta;
             if (item.qty <= 0) delete state.items[key];
         },
+      removeItem: (state, action: PayloadAction<{ productId: number; variantId?: string }>) => {
+  const { productId, variantId } = action.payload;
+
+  const key = `${productId}_${variantId || "base"}`;
+
+  delete state.items[key];
+},
 
         clearCart: (state) => {
             state.items = {};
@@ -49,5 +55,5 @@ const cartSlice = createSlice({
     },
 });
 
-export const { addItem, updateQty, clearCart } = cartSlice.actions;
+export const { addItem, updateQty, clearCart, removeItem } = cartSlice.actions;
 export default cartSlice.reducer;
