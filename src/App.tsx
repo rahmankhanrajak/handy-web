@@ -2,7 +2,6 @@ import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import { lazy} from 'react'
 import Layout from './Layout.tsx'
-import Home from './components/pages/Home.tsx'
 import OtpLogin from './components/pages/OtpLogin.tsx'
 import PrivateLayout from './PrivateLayout.tsx'
 import SelectService from './components/pages/SelectService.tsx'
@@ -12,6 +11,7 @@ import TransactionSuccess from './components/pages/TransactionSuccess.tsx'
 
 
 const Dashboard = lazy(() => import("./components/pages/Dashboard.tsx"));
+const Home = lazy(() => import("./components/pages/Home.tsx"));
 
 function App() {
   return (
