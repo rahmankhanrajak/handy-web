@@ -145,8 +145,14 @@ const Dashboard: React.FC = () => {
   return (
     <div className="h-screen flex bg-gradient-to-br from-slate-50 via-orange-50/20 to-slate-50 relative overflow-hidden font-sans">
       <aside className="w-16 sm:w-28 bg-white/90 backdrop-blur-xl border-r border-gray-200/50 flex flex-col items-center py-3 sm:py-6 shadow-xl shadow-black/5 z-30 animate-slide-in-left">
-        <div className="w-9 h-9 sm:w-12 sm:h-12 bg-orange-500  rounded-xl flex items-center justify-center  mb-4 sm:mb-8 animate-pulse-subtle">
-          <span className="text-white font-black text-base sm:text-xl">H</span>
+        <div className="w-9 h-9 sm:w-12 sm:h-12   rounded-xl flex items-center justify-center  mb-4 sm:mb-8 ">
+          {/* <span className="text-white font-black text-base sm:text-xl">H</span> */}
+          <img
+  src="/Logo.png"
+  alt="Logo"
+  className="w-10 h-10 sm:w-8 sm:h-8 object-contain"
+/>
+
         </div>
         <div className="flex-1 w-full  px-1 sm:px-2 space-y-2 sm:space-y-4 overflow-y-auto scrollbar-hide">
           {selectedCategory ? (
@@ -192,94 +198,60 @@ const Dashboard: React.FC = () => {
       </aside>
 
       <div className="flex-1 flex flex-col bg-transparent relative">
-        <header className="sticky top-0 z-40  backdrop-blur-xl ">
-          <div className="px-3 sm:px-6 py-1 sm:py-4">
-            <div className="overflow-x-auto scrollbar-hide scroll-smooth">
-              <div className="flex w-max gap-3 sm:gap-5 pb-2">
+      <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-gray-200/60">
+  <div className="px-3 sm:px-6 py-2 sm:py-3">
+    <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide scroll-smooth">
+      
+      {/* ALL ITEMS */}
+      <button
+        onClick={() => {
+          setSelectedCategory(null);
+          setSelectedSubCategory(null);
+        }}
+        className={`flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm sm:text-base transition-all duration-300 shadow-sm
+          ${
+            selectedCategory === null
+              ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-orange-400/40 scale-[1.03]"
+              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+          }`}
+      >
+        All Items
+      </button>
 
-                {/* ALL ITEMS */}
-                <button
-                  onClick={() => {
-                    setSelectedCategory(null);
-                    setSelectedSubCategory(null);
-                  }}
-                  className="flex-shrink-0 flex flex-col items-center gap-1 sm:gap-2"
-                >
-                  <div
-                    className={`w-12 h-12 cursor-pointer sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-md transition-all duration-300
-              ${selectedCategory === null
-                        ? "bg-orange-500  text-white "
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                      }`}
-                  >
-                    <svg
-                      className="w-6 h-6 sm:w-8 sm:h-8"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                      />
-                    </svg>
-                  </div>
-                  <span
-                    className={`text-[10px]  sm:text-xs font-bold text-center max-w-[70px] truncate 
-              ${selectedCategory === null
-                        ? "text-orange-500"
-                        : "text-gray-500"
-                      }`}
-                  >
-                    All Items
-                  </span>
-                </button>
+      {/* CATEGORY BUTTONS */}
+      {categories.map((cat) => {
+        const isActive = selectedCategory === cat.name;
 
-                {/* CATEGORY LIST */}
-                {categories.map((cat) => {
-                  const isActive = selectedCategory === cat.name;
+        return (
+          <button
+            key={cat.name}
+            onClick={() => {
+              setSelectedCategory(cat.name);
+              setSelectedSubCategory(null);
+            }}
+            className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm sm:text-base transition-all duration-300 shadow-sm
+              ${
+                isActive
+                  ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-orange-400/40 scale-[1.03]"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+          >
+            <img
+              src={cat.thumbnail}
+              alt={cat.name}
+              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover border border-white shadow"
+            />
 
-                  return (
-                    <button
-                      key={cat.name}
-                      onClick={() => {
-                        setSelectedCategory(cat.name);
-                        setSelectedSubCategory(null);
-                      }}
-                      className="flex-shrink-0 cursor-pointer flex flex-col items-center gap-1 sm:gap-2 group"
-                    >
-                      <div
-                        className={`relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden shadow-md transition-all duration-300
-                  ${isActive
-                            ? " scale-105 shadow-lg shadow-orange-300/40"
-                            : "ring-1 ring-gray-200 hover:scale-105"
-                          }`}
-                      >
-                        <img
-                          src={cat.thumbnail}
-                          alt={cat.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                      </div>
+            <span className="capitalize whitespace-nowrap">
+              {cat.name.replace(/-/g, " ")}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  </div>
+</header>
 
-                      <span
-                        className={`text-[10px] sm:text-xs font-bold text-center capitalize max-w-[70px] truncate transition-colors
-                  ${isActive
-                            ? "text-orange-500"
-                            : "text-gray-500"
-                          }`}
-                      >
-                        {cat.name.replace(/-/g, " ")}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </header>
 
 
 
