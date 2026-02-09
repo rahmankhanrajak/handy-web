@@ -10,7 +10,7 @@ import ProductCard from "../ProductCard";
 import Pagination from "../Pagination";
 import "../../index.css"
 
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = 9;
 
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch();
@@ -92,6 +92,15 @@ const Dashboard: React.FC = () => {
     Array.isArray(product.variants) && product.variants.length > 0;
 
   const getSimpleKey = (productId: number) => `${productId}_base`;
+const getVariantQty = (productId: number) => {
+  return Object.values(cart)
+    .filter((item: any) => item.productId === productId && item.variantId)
+    .reduce((sum: number, item: any) => sum + item.qty, 0);
+};
+
+const updateVariantQty = (productId: number, delta: number) => {
+  dispatch(updateQty({ productId, delta }));
+};
 
   const addSimpleProduct = (product: Product) => {
     dispatch(addItem({ productId: product.id, qty: 1 }));
@@ -223,6 +232,7 @@ const Dashboard: React.FC = () => {
         const isActive = selectedCategory === cat.name;
 
         return (
+          
           <button
             key={cat.name}
             onClick={() => {
@@ -260,28 +270,31 @@ const Dashboard: React.FC = () => {
           {/* Products Scroll Area */}
           <div className="flex-1 overflow-y-auto p-2 sm:p-6 scrollbar-modern">
             <div className="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-4">
-              {paginatedProducts.map((product, index) => {
-                const simpleKey = getSimpleKey(product.id);
-                const simpleItem = cart[simpleKey];
-                const added =
-                  !!simpleItem ||
-                  Object.values(cart).some((item: any) => item.productId === product.id);
-                // const added = isProductAdded(product.id);
+      {paginatedProducts.map((product, index) => {
+  const simpleKey = getSimpleKey(product.id);
+  const simpleItem = cart[simpleKey];
 
-                return (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    added={added}
-                    simpleItem={simpleItem}
-                    hasVariants={hasVariants}
-                    openVariantPopup={openVariantPopup}
-                    updateSimpleQty={updateSimpleQty}
-                    addSimpleProduct={addSimpleProduct}
-                    index={index}
-                  />
-                );
-              })}
+  const variantQty = getVariantQty(product.id);
+
+  const added = !!simpleItem || variantQty > 0;
+
+  return (
+    <ProductCard
+      key={product.id}
+      product={product}
+      added={added}
+      simpleItem={simpleItem}
+      variantQty={variantQty}
+      hasVariants={hasVariants}
+      openVariantPopup={openVariantPopup}
+      updateSimpleQty={updateSimpleQty}
+      updateVariantQty={updateVariantQty}
+      addSimpleProduct={addSimpleProduct}
+      index={index}
+    />
+  );
+})}
+
             </div>
           </div>
 

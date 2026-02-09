@@ -7,7 +7,7 @@ const QrPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate("/transaction"); // your success route
-    }, 30000); // 3 seconds delay
+    }, 3000); // 3 seconds delay
 
     return () => clearTimeout(timer);
   }, [navigate]);
