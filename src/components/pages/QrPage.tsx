@@ -1,6 +1,6 @@
 import  { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import qrcode from "../../assets/QR1.jpg"
 const QrPage = () => {
   const navigate = useNavigate();
 
@@ -30,7 +30,9 @@ const QrPage = () => {
         <div className="flex justify-center mt-6">
           <div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-200">
             <div className="w-[220px] h-[220px] bg-slate-100 rounded-xl flex items-center justify-center">
-              <p className="text-slate-500 font-semibold">QR CODE</p>
+              {/* <p className="text-slate-500 font-semibold">QR CODE</p>
+               */}
+               <img src={qrcode}  className="h-full w-full"/>
             </div>
           </div>
         </div>
