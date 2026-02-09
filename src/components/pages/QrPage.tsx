@@ -61,7 +61,7 @@ const QrPage = () => {
 
         {/* Footer */}
         <p className="text-center text-xs text-slate-400 mt-6">
-          Powered by Food Terminal ⚡
+          Powered by Food Handy ⚡
         </p>
       </div>
     </div>

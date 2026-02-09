@@ -66,7 +66,7 @@ const TransactionSuccess = () => {
 
         {/* Footer */}
         <p className="text-xs text-slate-400 mt-6">
-          Thank you for choosing Food Terminal ❤️
+          Thank you for choosing Handy ❤️
         </p>
       </div>
     </div>
