@@ -404,7 +404,7 @@ const Dashboard: React.FC = () => {
                 {/* STEP 1: VARIANT SELECTION */}
                 {variantPopup.step === "variant" && (
                   <div className="space-y-2">
-                    {variantPopup.product?.variants?.map((v, index) => {
+                    {variantPopup.product?.variants?.map((v) => {
                       const isSelected = variantPopup.variant?.id === v.id;
 
                       return (
