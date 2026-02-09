@@ -18,7 +18,12 @@ const products = [
       { id: "half", name: "Half Plate", price: 0 },
       { id: "full", name: "Full Plate", price: 80 },
       { id: "jumbo", name: "Jumbo", price: 150 }
-    ]
+    ],
+     addons: [
+    { id: "red", name: "Red Chutney", price: 10 },
+    { id: "green", name: "Green Chutney", price: 10 },
+    { id: "raita", name: "Raita", price: 20 }
+  ]
   },
   {
     id: 2,

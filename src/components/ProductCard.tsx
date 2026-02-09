@@ -34,11 +34,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       style={{ animationDelay: `${index * 30}ms` }}
-      className={`rounded-2xl sm:rounded-3xl p-2 sm:p-3 transition-all duration-500 group flex flex-col border relative backdrop-blur-sm animate-fade-in-up hover:scale-[1.02] active:scale-[0.98] overflow-hidden ${
-        added
+      className={`rounded-2xl sm:rounded-3xl p-2 sm:p-3 transition-all duration-500 group flex flex-col border relative backdrop-blur-sm animate-fade-in-up hover:scale-[1.02] active:scale-[0.98] overflow-hidden ${added
           ? "bg-gradient-to-br from-orange-50 to-orange-100/50 border-orange-300 shadow-xl shadow-orange-200/50 ring-2 ring-orange-400/30"
           : "bg-white/90 border-gray-100 shadow-sm hover:shadow-xl hover:shadow-orange-100/50"
-      }`}
+        }`}
     >
       {/* Image */}
       <div className="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-3 bg-gradient-to-br from-gray-100 to-gray-200">

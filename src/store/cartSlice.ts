@@ -4,6 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 interface CartItem {
   productId: number;
   variantId?: string;
+  addons?: string[];   // ✅ add-ons
   qty: number;
 }
 
@@ -15,16 +16,28 @@ const initialState: CartState = {
   items: {},
 };
 
+// ✅ helper to generate unique key
+const makeKey = (productId: number, variantId?: string, addons?: string[]) => {
+  const addonKey =
+    addons && addons.length > 0 ? addons.slice().sort().join("-") : "noaddons";
+
+  return `${productId}_${variantId || "base"}_${addonKey}`;
+};
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     addItem: (state, action: PayloadAction<CartItem>) => {
-      const key = `${action.payload.productId}_${action.payload.variantId || "base"}`;
+      const { productId, variantId, addons, qty } = action.payload;
+
+      const key = makeKey(productId, variantId, addons);
 
       state.items[key] = {
-        ...action.payload,
-        qty: (state.items[key]?.qty || 0) + action.payload.qty,
+        productId,
+        variantId,
+        addons: addons || [],
+        qty: (state.items[key]?.qty || 0) + qty,
       };
     },
 
@@ -33,14 +46,15 @@ const cartSlice = createSlice({
       action: PayloadAction<{
         productId: number;
         variantId?: string;
+        addons?: string[];
         delta: number;
       }>
     ) => {
-      const { productId, variantId, delta } = action.payload;
+      const { productId, variantId, addons, delta } = action.payload;
 
-      // If variantId provided -> update exact item
-      if (variantId) {
-        const key = `${productId}_${variantId}`;
+      // ✅ if variantId or addons provided -> update exact item
+      if (variantId || (addons && addons.length > 0)) {
+        const key = makeKey(productId, variantId, addons);
         const item = state.items[key];
         if (!item) return;
 
@@ -49,22 +63,22 @@ const cartSlice = createSlice({
         return;
       }
 
-      // First try base product
-      const baseKey = `${productId}_base`;
+      // ✅ base product (no variant, no addons)
+      const baseKey = makeKey(productId, "base", []);
       if (state.items[baseKey]) {
         state.items[baseKey].qty += delta;
         if (state.items[baseKey].qty <= 0) delete state.items[baseKey];
         return;
       }
 
-      // Otherwise reduce last variant of this product
-      const variantKeys = Object.keys(state.items).filter(
-        (k) => state.items[k].productId === productId && state.items[k].variantId
+      // ✅ otherwise reduce last matching variant item (any addons)
+      const keys = Object.keys(state.items).filter(
+        (k) => state.items[k].productId === productId
       );
 
-      if (variantKeys.length === 0) return;
+      if (keys.length === 0) return;
 
-      const keyToUpdate = variantKeys[variantKeys.length - 1];
+      const keyToUpdate = keys[keys.length - 1];
 
       state.items[keyToUpdate].qty += delta;
       if (state.items[keyToUpdate].qty <= 0) delete state.items[keyToUpdate];
@@ -72,10 +86,14 @@ const cartSlice = createSlice({
 
     removeItem: (
       state,
-      action: PayloadAction<{ productId: number; variantId?: string }>
+      action: PayloadAction<{
+        productId: number;
+        variantId?: string;
+        addons?: string[];
+      }>
     ) => {
-      const { productId, variantId } = action.payload;
-      const key = `${productId}_${variantId || "base"}`;
+      const { productId, variantId, addons } = action.payload;
+      const key = makeKey(productId, variantId, addons);
       delete state.items[key];
     },
 

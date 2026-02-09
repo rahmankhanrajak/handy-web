@@ -1,4 +1,4 @@
-import  { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
@@ -28,9 +28,10 @@ const Cart = () => {
     dispatch(updateQty({ productId, variantId, delta: -1 }));
   };
 
+
   const cartItems = useMemo(() => {
     return cartEntries
-      .map(([key, item]) => {
+      .map(([key, item]: any) => {
         const product = products.find((p) => p.id === item.productId);
         if (!product) return null;
 
@@ -38,12 +39,21 @@ const Cart = () => {
           ? product.variants?.find((v) => v.id === item.variantId)
           : null;
 
-        const itemPrice = product.price + (variant?.price || 0);
+        // ✅ get addon objects
+        const selectedAddons =
+          product.addons?.filter((a) => item.addons?.includes(a.id)) || [];
+
+        // ✅ addon price total
+        const addonsPrice = selectedAddons.reduce((sum, a) => sum + a.price, 0);
+
+        // ✅ final price
+        const itemPrice = product.price + (variant?.price || 0) + addonsPrice;
 
         return {
           key,
           title: product.title,
           variantName: variant?.name || null,
+          addons: selectedAddons, // ✅ include addon list
           qty: item.qty,
           price: itemPrice,
           total: itemPrice * item.qty,
@@ -54,6 +64,7 @@ const Cart = () => {
       })
       .filter(Boolean);
   }, [cartEntries, products]);
+
 
   const totalQty = cartItems.reduce((sum, item: any) => sum + item.qty, 0);
   const subtotal = cartItems.reduce((sum, item: any) => sum + item.total, 0);
@@ -146,7 +157,9 @@ const Cart = () => {
               >{/* Delete Button (Top Right) */}
                 <button
                   onClick={() =>
-                    dispatch(removeItem({ productId: item.productId, variantId: item.variantId }))
+                    dispatch(removeItem({
+                      productId: item.productId, variantId: item.variantId, addons: item.addons?.map((a: any) => a.id) || []
+                    }))
                   }
                   className="absolute cursor-pointer top-3 right-3 w-8 h-8 rounded-xl bg-red-100 hover:bg-red-200 flex items-center justify-center active:scale-95 transition shadow-sm"
                   title="Remove Item"
@@ -191,7 +204,12 @@ const Cart = () => {
 
                       {item.variantName && (
                         <p className="text-xs text-orange-600 font-bold">
-                          {item.variantName}
+                          {item.variantName}, {item.addons && item.addons.length > 0 && (
+                            <p className="text-[11px] text-green-600 font-bold mt-1">
+                              {item.addons.map((a: any) => a.name).join(", ")}
+                            </p>
+                          )}
+
                         </p>
                       )}
 
@@ -355,7 +373,12 @@ const Cart = () => {
                     </p>
                     {item.variantName && (
                       <p className="text-xs text-orange-600 font-semibold">
-                        {item.variantName}
+                        {item.variantName}, {item.addons && item.addons.length > 0 && (
+                          <p className="text-xs text-green-600 font-semibold">
+                            Add-ons: {item.addons.map((a: any) => a.name).join(", ")}
+                          </p>
+                        )}
+
                       </p>
                     )}
                     <p className="text-xs text-gray-500">

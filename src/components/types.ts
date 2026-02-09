@@ -1,3 +1,10 @@
+export interface Addon {
+  id: string;
+  name: string;
+  price: number;
+}
+
+
 export  interface CategoryItem {
     name: string;
     thumbnail: string;
@@ -7,6 +14,8 @@ export  interface CartItem {
     productId: number;
     variantId?: string;
     qty: number;
+    addons?: string[];  
+
 }
 
 export interface Variant {
@@ -26,4 +35,5 @@ export interface Product {
   stock: number;
   thumbnail: string;
   variants?: Variant[];
+    addons?: Addon[];
 }
